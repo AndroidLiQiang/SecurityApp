@@ -1,0 +1,12 @@
+/build
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+gradlew
+gradlew.bat
+/*.iml
+/HybridLib/*.iml
+/app/*.iml
+/lccb_library/.cxx/*

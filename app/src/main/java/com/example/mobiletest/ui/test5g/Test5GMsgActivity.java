@@ -1,0 +1,44 @@
+package com.example.mobiletest.ui.test5g;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.example.mobiletest.BR;
+import com.example.mobiletest.base.BaseActivity;
+import com.example.mobiletest.databinding.ActivityTest5GMsgBinding;
+
+/**
+ * author : liqiang
+ * e-mail : qiang_li1@asdc.com.cn
+ * date   : 2020/7/9
+ * desc   : 5G消息测试入口
+ */
+public class Test5GMsgActivity extends BaseActivity<ActivityTest5GMsgBinding> {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding.setVariable(BR.test, this);
+    }
+
+    /**
+    * 5g消息加解密
+    * */
+    public void goEncryptOrDecrypt() {
+        startActivity(new Intent(this, EncryptOrDecryptActivity.class));
+    }
+
+    /**
+     * 在线支付
+     */
+    public void goOnlinePay() {
+        startActivity(new Intent(this, OnlinePayActivity.class));
+    }
+
+    /**
+     * NFC支付
+     */
+    public void goNFCPay() {
+        startActivity(new Intent(this, NFCPayActivity.class));
+    }
+}

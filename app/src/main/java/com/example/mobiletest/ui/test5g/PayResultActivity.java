@@ -5,12 +5,18 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.mobiletest.BR;
+import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
 import com.example.mobiletest.databinding.ActivityPayResultBinding;
 
 public class PayResultActivity extends BaseActivity<ActivityPayResultBinding> {
 
     private String type;
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_pay_result;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

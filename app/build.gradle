@@ -23,17 +23,14 @@ android {
         versionName build_version.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
             buildConfigField "String", "BASE_URL", "\"http://\""
-            minifyEnabled false
-            /*zipAlignEnabled true
+            minifyEnabled true
+            zipAlignEnabled true
             shrinkResources true
-            */
-            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }

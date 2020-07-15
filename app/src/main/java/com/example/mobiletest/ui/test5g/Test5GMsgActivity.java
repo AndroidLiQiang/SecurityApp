@@ -17,6 +17,11 @@ import com.example.mobiletest.databinding.ActivityTest5GMsgBinding;
 public class Test5GMsgActivity extends BaseActivity<ActivityTest5GMsgBinding> {
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_test5_g_msg;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding.setVariable(BR.test, this);

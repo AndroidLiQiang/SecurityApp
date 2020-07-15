@@ -13,4 +13,6 @@
     <string name="online_pay_test">在线支付测试</string>
     <string name="nfc_pay_test">NFC支付测试</string>
     <string name="pay">支付</string>
+    <string name="login_success">登录成功</string>
+    <string name="back_home">返回主页</string>
 </resources>

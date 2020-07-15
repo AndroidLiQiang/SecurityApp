@@ -1,21 +1,14 @@
 package com.example.mobiletest.base;
 
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.viewbinding.ViewBinding;
 
 import com.gyf.immersionbar.ImmersionBar;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 import me.jessyan.autosize.AutoSizeCompat;
 
@@ -27,23 +20,16 @@ import me.jessyan.autosize.AutoSizeCompat;
  *     desc   : BaseActivity
  * </pre>
  */
-public class BaseActivity<T extends ViewBinding> extends AppCompatActivity {
+public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActivity {
     protected T binding;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    protected abstract int getLayoutId();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initImmersionBar();
-        Type superclass = getClass().getGenericSuperclass();
-        Class<?> aClass = (Class<?>) ((ParameterizedType) superclass).getActualTypeArguments()[0];
-        try {
-            Method method = aClass.getDeclaredMethod("inflate", LayoutInflater.class);
-            binding = (T) method.invoke(null, getLayoutInflater());
-            setContentView(binding.getRoot());
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        binding = (T) DataBindingUtil.setContentView(this, getLayoutId());
     }
 
     public void back() {

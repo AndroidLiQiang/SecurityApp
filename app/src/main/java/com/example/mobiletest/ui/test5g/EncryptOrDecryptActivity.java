@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.mobiletest.BR;
+import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
 import com.example.mobiletest.databinding.ActivityEncryptOrDecryptBinding;
 
@@ -14,6 +15,11 @@ import com.example.mobiletest.databinding.ActivityEncryptOrDecryptBinding;
  * desc   : 5g消息加解密
  */
 public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecryptBinding> {
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_encrypt_or_decrypt;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

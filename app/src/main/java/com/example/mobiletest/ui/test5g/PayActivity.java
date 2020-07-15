@@ -19,6 +19,11 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
     public String titleName;
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_pay;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         titleName = getIntent().getStringExtra("title");

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.mobiletest.BR;
+import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
 import com.example.mobiletest.databinding.ActivityTest5GMsgBinding;
 
@@ -32,13 +33,17 @@ public class Test5GMsgActivity extends BaseActivity<ActivityTest5GMsgBinding> {
      * 在线支付
      */
     public void goOnlinePay() {
-        startActivity(new Intent(this, OnlinePayActivity.class));
+        Intent intent = new Intent(this, PayActivity.class);
+        intent.putExtra("title", getResources().getString(R.string.online_pay_test));
+        startActivity(intent);
     }
 
     /**
      * NFC支付
      */
     public void goNFCPay() {
-        startActivity(new Intent(this, NFCPayActivity.class));
+        Intent intent = new Intent(this, PayActivity.class);
+        intent.putExtra("title", getResources().getString(R.string.nfc_pay_test));
+        startActivity(intent);
     }
 }

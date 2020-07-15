@@ -2,33 +2,59 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mobiletest">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.test5g.PayResultActivity"></activity>
+
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.4" />
-        <!--适配华为（huawei）刘海屏-->
+            android:value="2.4" /> <!-- 适配华为（huawei）刘海屏 -->
         <meta-data
             android:name="android.notch_support"
-            android:value="true"/>
-        <!--适配小米（xiaomi）刘海屏-->
+            android:value="true" /> <!-- 适配小米（xiaomi）刘海屏 -->
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
-        <activity android:name=".ui.test5g.NFCPayActivity"></activity>
-        <activity android:name=".ui.test5g.OnlinePayActivity" />
-        <activity android:name=".ui.test5g.EncryptOrDecryptActivity" />
-        <activity android:name=".ui.login.LoginResultActivity" />
-        <activity android:name=".base.BaseActivity" />
-        <activity android:name=".ui.test5g.Test5GMsgActivity" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.mobiletest.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity
+            android:name=".ui.test5g.PayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.test5g.EncryptOrDecryptActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.login.LoginResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".base.BaseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.test5g.Test5GMsgActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

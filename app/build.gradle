@@ -1,28 +1,57 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    signingConfigs {
+        release {
+            storeFile file('/Users/liqiang/Desktop/ydproject/app/keystore/mobile.jks')
+            storePassword '123123'
+            keyAlias 'key0'
+            keyPassword '123123'
+        }
+        debug {
+            storeFile file("./keystore/debug.keystore")
+        }
+    }
+    compileSdkVersion build_version.compileSdkVersion
+    buildToolsVersion build_version.buildToolsVersion
 
     defaultConfig {
         applicationId "com.example.mobiletest"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion build_version.minSdkVersion
+        targetSdkVersion build_version.targetSdkVersion
+        versionCode build_version.versionCode
+        versionName build_version.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
+            buildConfigField "String", "BASE_URL", "\"http://\""
+            minifyEnabled false
+            /*zipAlignEnabled true
+            shrinkResources true
+            */
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            buildConfigField "String", "BASE_URL", "\"http://\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -30,9 +59,19 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-
+    implementation libs.okhttp
+    implementation libs.okhttp_logging
+    implementation libs.rxjava
+    implementation libs.rxandroid
+    implementation libs.rxpermissions
+    implementation libs.retrofit
+    implementation libs.retrofit_gson
+    implementation libs.retrofit_rxjava
+    implementation libs.immersionbar
+    implementation libs.lottie
+    implementation libs.rxlifecycle
+    implementation libs.autosize
 }

@@ -1,15 +1,14 @@
 package com.example.mobiletest.base;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-import androidx.viewbinding.ViewBinding;
-
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewbinding.ViewBinding;
 
 import com.gyf.immersionbar.ImmersionBar;
 
@@ -18,13 +17,14 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+import me.jessyan.autosize.AutoSizeCompat;
+
 /**
  * <pre>
  *     author : liqiang
  *     e-mail : liqiang02082@kayak.com.cn
  *     time   : 2020/07/09
  *     desc   : BaseActivity
- *     version: 1.0
  * </pre>
  */
 public class BaseActivity<T extends ViewBinding> extends AppCompatActivity {
@@ -59,5 +59,18 @@ public class BaseActivity<T extends ViewBinding> extends AppCompatActivity {
                 .fitsSystemWindows(true)
                 .statusBarColor("#FAFAFA")
                 .init();
+    }
+
+    @Override
+    public Resources getResources() {
+        Resources resources = super.getResources();
+        AutoSizeCompat.autoConvertDensityOfGlobal(resources);
+        return resources;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AutoSizeCompat.autoConvertDensityOfGlobal(super.getResources());
     }
 }

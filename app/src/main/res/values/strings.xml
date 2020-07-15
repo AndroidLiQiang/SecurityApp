@@ -12,4 +12,5 @@
     <string name="a_key_login">一键登陆测试</string>
     <string name="online_pay_test">在线支付测试</string>
     <string name="nfc_pay_test">NFC支付测试</string>
+    <string name="pay">支付</string>
 </resources>

@@ -50,7 +50,7 @@ public class ClearEditView extends androidx.appcompat.widget.AppCompatEditText i
         mClearDrawable = getCompoundDrawables()[2];
         if (mClearDrawable == null) {
 //        	throw new NullPointerException("You can add drawableRight attribute in XML");
-            mClearDrawable = getResources().getDrawable(R.mipmap.elements_error);
+            mClearDrawable = getResources().getDrawable(R.mipmap.ic_delete);
         }
 
         mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight());

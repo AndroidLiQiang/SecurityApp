@@ -1,0 +1,47 @@
+ext {
+    build_version = [
+            compileSdkVersion: 29,
+            minSdkVersion    : 21,
+            buildToolsVersion: '29.0.3',
+            targetSdkVersion : 29,
+            versionCode      : 10000,
+            versionName      : '1.0.0'
+    ]
+
+    versions = [
+            android_plugin: '4.0.0',
+            immersionbar  : '3.0.0',
+            okhttp        : '4.8.0',
+            rxjava        : '2.2.13',
+            rxandroid     : '2.1.1',
+            rxlifecycle   : '2.2.2',
+            retrofit      : '2.9.0',
+            immersionbar  : '3.0.0',
+            lottie        : '3.4.1',
+            autosize      : '1.2.1',
+    ]
+
+    build_plugins = [
+            android_gradle: [group: 'com.android.tools.build', name: 'gradle', version: versions.android_plugin]
+    ]
+
+    libs = [
+            okhttp                      : [group: 'com.squareup.okhttp3', name: 'okhttp', version: versions.okhttp],
+            okhttp_logging              : [group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: versions.okhttp],
+
+            rxjava                      : [group: 'io.reactivex.rxjava2', name: 'rxjava', version: versions.rxjava],
+            rxandroid                   : [group: 'io.reactivex.rxjava2', name: 'rxandroid', version: versions.rxandroid],
+            rxlifecycle                 : [group: 'com.trello.rxlifecycle2', name: 'rxlifecycle-components', version: versions.rxlifecycle],
+            rxpermissions               : [group: 'com.github.tbruyelle', name: 'rxpermissions', version: '0.10.2'],
+
+            retrofit                    : [group: 'com.squareup.retrofit2', name: 'retrofit', version: versions.retrofit],
+            retrofit_gson               : [group: 'com.squareup.retrofit2', name: 'converter-gson', version: versions.retrofit],
+            retrofit_rxjava             : [group: 'com.squareup.retrofit2', name: 'adapter-rxjava2', version: versions.retrofit],
+
+            immersionbar                : [group: 'com.gyf.immersionbar', name: 'immersionbar', version: versions.immersionbar],
+
+            lottie                      : [group: 'com.airbnb.android', name: 'lottie', version: versions.lottie],
+
+            autosize                    : [group: 'me.jessyan', name: 'autosize', version: versions.autosize],
+    ]
+}

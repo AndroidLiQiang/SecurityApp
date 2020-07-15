@@ -1,13 +1,9 @@
 package com.example.mobiletest.ui.test5g;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.mobiletest.BR;
-import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
 import com.example.mobiletest.databinding.ActivityEncryptOrDecryptBinding;
 

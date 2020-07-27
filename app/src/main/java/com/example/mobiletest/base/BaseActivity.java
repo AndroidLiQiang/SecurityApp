@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.viewbinding.ViewBinding;
 
 import com.gyf.immersionbar.ImmersionBar;
@@ -20,7 +19,7 @@ import me.jessyan.autosize.AutoSizeCompat;
  */
 public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActivity {
 
-    protected ViewDataBinding binding;
+    protected T binding;
 
     protected abstract int getLayoutId();
 
@@ -28,7 +27,7 @@ public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActiv
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initImmersionBar();
-        binding = DataBindingUtil.setContentView(this, getLayoutId());
+        binding = (T) DataBindingUtil.setContentView(this, getLayoutId());
     }
 
     public void back() {

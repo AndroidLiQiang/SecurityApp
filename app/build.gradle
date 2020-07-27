@@ -21,7 +21,6 @@ android {
         targetSdkVersion build_version.targetSdkVersion
         versionCode build_version.versionCode
         versionName build_version.versionName
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -50,6 +49,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
@@ -71,4 +76,5 @@ dependencies {
     implementation libs.immersionbar
     implementation libs.lottie
     implementation libs.autosize
+    implementation(name: 'teesimmanager-debug', ext: 'aar')
 }

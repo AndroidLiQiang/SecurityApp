@@ -7,31 +7,27 @@ package com.example.mobiletest.net;
  * desc   : 统一响应
  */
 public class BaseResponse<T> {
-    private int res_code;
+    private String code;
+    private String message;
     private String err_msg;
-    private T demo;
+    private T result;
 
-    public int getRes_code() {
-        return res_code;
+    public String getMessage() {
+        return message;
     }
 
-    public void setRes_code(int res_code) {
-        this.res_code = res_code;
+    public String getCode() {
+        return code;
     }
+
 
     public String getErr_msg() {
         return err_msg;
     }
 
-    public void setErr_msg(String err_msg) {
-        this.err_msg = err_msg;
+
+    public T getResult() {
+        return result;
     }
 
-    public T getDemo() {
-        return demo;
-    }
-
-    public void setDemo(T demo) {
-        this.demo = demo;
-    }
 }

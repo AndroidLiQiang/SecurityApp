@@ -17,7 +17,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * desc   : Retrofit封装
  */
 public class RetrofitUtils {
-    private static final String TAG = "RetrofitUtils";
     private static ApiUrl mApiUrl;
 
     /**
@@ -39,8 +38,7 @@ public class RetrofitUtils {
 
     public ApiUrl getRetrofit() {
         // 初始化Retrofit
-        ApiUrl apiUrl = initRetrofit(initOkHttp()).create(ApiUrl.class);
-        return apiUrl;
+        return initRetrofit(initOkHttp()).create(ApiUrl.class);
     }
 
     /**
@@ -50,7 +48,7 @@ public class RetrofitUtils {
     private Retrofit initRetrofit(OkHttpClient client) {
         return new Retrofit.Builder()
                 .client(client)
-                .baseUrl("https://www.baidu.com")
+                .baseUrl(Constans.BaseUrl)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

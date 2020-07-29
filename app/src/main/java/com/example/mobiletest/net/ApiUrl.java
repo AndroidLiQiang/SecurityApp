@@ -1,6 +1,7 @@
 package com.example.mobiletest.net;
 
 import com.example.mobiletest.bean.MacBean;
+import com.example.mobiletest.bean.PayBean;
 import com.example.mobiletest.bean.RandomBean;
 
 import java.util.HashMap;
@@ -22,11 +23,23 @@ public interface ApiUrl {
     @GET
     Observable<RandomBean> getUser(@Url String url);
 
+    /**
+     * 获取随机数
+     */
     @GET("json")
     Observable<BaseResponse<RandomBean>> getRandom(@QueryMap HashMap<String, String> info);
 
+    /**
+     * 验证mac
+     */
     @GET("mac")
     Observable<BaseResponse<MacBean>> verifyMac(@QueryMap HashMap<String, Object> info);
+
+    /**
+     * 验证签名
+     */
+    @GET("sign")
+    Observable<BaseResponse<PayBean>> verifySign(@QueryMap HashMap<String, Object> info);
 
     @Headers("Accept:application/json")
     @POST("json")

@@ -6,5 +6,14 @@ package com.example.mobiletest.bean;
  * date  : 2020/7/27
  * desc  :
  */
-class PayBean {
+public class PayBean {
+    private String sign;
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String mac) {
+        this.sign = mac;
+    }
 }

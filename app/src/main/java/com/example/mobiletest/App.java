@@ -11,9 +11,16 @@ import com.example.teesimmanager.TeeSimManager;
  * desc  :
  */
 public class App extends Application {
+    private static App instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         TeeSimManager.getInstance().init(this);
+    }
+
+    public static App getInstance() {
+        return instance;
     }
 }

@@ -3,6 +3,7 @@ package com.example.mobiletest.net;
 import android.app.Activity;
 
 import com.example.mobiletest.bean.MacBean;
+import com.example.mobiletest.bean.PayBean;
 import com.example.mobiletest.bean.RandomBean;
 
 import java.util.HashMap;
@@ -30,6 +31,15 @@ public class RequestUtils {
     public static void verifyMac(Activity context, HashMap<String, Object> map, MyObserver<MacBean> observer) {
         RetrofitUtils.getApiUrl()
                 .verifyMac(map).compose(RxHelper.observableIO2Main(context))
+                .subscribe(observer);
+    }
+
+    /**
+     * 验证签名
+     */
+    public static void verifySign(Activity context, HashMap<String, Object> map, MyObserver<PayBean> observer) {
+        RetrofitUtils.getApiUrl()
+                .verifySign(map).compose(RxHelper.observableIO2Main(context))
                 .subscribe(observer);
     }
 

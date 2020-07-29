@@ -14,5 +14,9 @@
     <string name="nfc_pay_test">NFC支付测试</string>
     <string name="pay">支付</string>
     <string name="login_success">登录成功</string>
+    <string name="nfc_pay_success">NFC支付成功</string>
+    <string name="online_pay_success">在线支付成功</string>
+    <string name="pay_result">支付结果</string>
+    <string name="pay_success">支付成功</string>
     <string name="back_home">返回主页</string>
 </resources>

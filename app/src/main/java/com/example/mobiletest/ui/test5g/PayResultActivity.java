@@ -2,7 +2,6 @@ package com.example.mobiletest.ui.test5g;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
@@ -24,9 +23,9 @@ public class PayResultActivity extends BaseActivity<ActivityPayResultBinding> {
         type = getIntent().getStringExtra("type");
         binding.setVariable(BR.payResult, this);
         if ("online".equals(type)) {
-            Toast.makeText(this, "在线支付", Toast.LENGTH_SHORT).show();
+            binding.payResult.setText(R.string.online_pay_success);
         } else {
-            Toast.makeText(this, "NFC支付", Toast.LENGTH_SHORT).show();
+            binding.payResult.setText(R.string.nfc_pay_success);
         }
     }
 

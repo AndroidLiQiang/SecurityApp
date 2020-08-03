@@ -2,6 +2,7 @@ package com.example.mobiletest.net;
 
 import android.app.Activity;
 
+import com.example.mobiletest.bean.EncryptBean;
 import com.example.mobiletest.bean.MacBean;
 import com.example.mobiletest.bean.PayBean;
 import com.example.mobiletest.bean.RandomBean;
@@ -40,6 +41,27 @@ public class RequestUtils {
     public static void verifySign(Activity context, HashMap<String, Object> map, MyObserver<PayBean> observer) {
         RetrofitUtils.getApiUrl()
                 .verifySign(map).compose(RxHelper.observableIO2Main(context))
+                .subscribe(observer);
+    }
+
+    /***
+     *  数据加密
+     */
+    public static void encryptdata(Activity context, HashMap<String, String> map, MyObserver<EncryptBean> observer) {
+        RetrofitUtils.getApiUrl()
+                .encryptdata(map).compose(RxHelper.observableIO2Main(context))
+                .subscribe(observer);
+    }
+
+    /***
+     * 数据解密
+     * @param context
+     * @param map
+     * @param observer
+     */
+    public static void decryptdata(Activity context, HashMap<String, String> map, MyObserver<EncryptBean> observer) {
+        RetrofitUtils.getApiUrl()
+                .decryptdata(map).compose(RxHelper.observableIO2Main(context))
                 .subscribe(observer);
     }
 

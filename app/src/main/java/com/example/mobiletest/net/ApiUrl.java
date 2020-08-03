@@ -1,5 +1,6 @@
 package com.example.mobiletest.net;
 
+import com.example.mobiletest.bean.EncryptBean;
 import com.example.mobiletest.bean.MacBean;
 import com.example.mobiletest.bean.PayBean;
 import com.example.mobiletest.bean.RandomBean;
@@ -40,6 +41,20 @@ public interface ApiUrl {
      */
     @GET("sign")
     Observable<BaseResponse<PayBean>> verifySign(@QueryMap HashMap<String, Object> info);
+
+    /**
+     * 消息加密
+     */
+    @GET("encrypt")
+    Observable<BaseResponse<EncryptBean>> encryptdata(@QueryMap HashMap<String, String> map);
+
+
+    /***
+     *  消息解密
+     */
+
+    @GET("decrypt")
+    Observable<BaseResponse<EncryptBean>> decryptdata(@QueryMap HashMap<String, String> map);
 
     @Headers("Accept:application/json")
     @POST("json")

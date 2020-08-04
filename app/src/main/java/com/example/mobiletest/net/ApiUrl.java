@@ -46,7 +46,7 @@ public interface ApiUrl {
      * 消息加密
      */
     @GET("encrypt")
-    Observable<BaseResponse<EncryptBean>> encryptdata(@QueryMap HashMap<String, String> map);
+    Observable<BaseResponse<EncryptBean>> encryptData(@QueryMap HashMap<String, String> map);
 
 
     /***
@@ -54,7 +54,7 @@ public interface ApiUrl {
      */
 
     @GET("decrypt")
-    Observable<BaseResponse<EncryptBean>> decryptdata(@QueryMap HashMap<String, String> map);
+    Observable<BaseResponse<EncryptBean>> decryptData(@QueryMap HashMap<String, String> map);
 
     @Headers("Accept:application/json")
     @POST("json")

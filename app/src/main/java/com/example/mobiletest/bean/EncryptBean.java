@@ -6,15 +6,15 @@ package com.example.mobiletest.bean;
  */
 public class EncryptBean {
 
-    public String message;
+    public String encryptOrDecrypt;
 
     public EncryptBean(){}
 
-    public String getMessage() {
-        return message;
+    public String getEncryptOrDecrypt() {
+        return encryptOrDecrypt;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setEncryptOrDecrypt(String message) {
+        this.encryptOrDecrypt = message;
     }
 }

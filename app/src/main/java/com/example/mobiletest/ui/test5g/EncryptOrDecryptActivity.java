@@ -41,23 +41,22 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      * 加密
      */
     public void encrypt() {
-        String mseeage = binding.message.getText().toString();
-        if (mseeage != null && !TextUtils.isEmpty(mseeage)) {
+        String message = binding.message.getText().toString();
+        if (!TextUtils.isEmpty(message)) {
             HashMap<String, String> map = new HashMap<>();
-            map.put("data", mseeage);
-            RequestUtils.encryptdata(this, map, new MyObserver<EncryptBean>(this, false) {
+            map.put("data", message);
+            RequestUtils.encryptData(this, map, new MyObserver<EncryptBean>(this, false) {
                 @Override
                 public void onSuccess(BaseResponse<EncryptBean> result) {
                     if (result != null) {
                         String code = result.getCode();
-                        int Integercode = Integer.parseInt(code);
-                        if (Integercode == 200) {
-                            String message = result.getMessage();
-                            String message1 = result.getResult().getMessage();
+                        int integerCode = Integer.parseInt(code);
+                        String message = result.getMessage();
+                        if (integerCode == 200) {
+                            String message1 = result.getResult().getEncryptOrDecrypt();
                             Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
                             binding.result.setText(message1);
                         } else {
-                            String message = result.getMessage();
                             Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -87,24 +86,21 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      */
     public void decrypt() {
         String message = binding.result.getText().toString();
-        if (message != null && TextUtils.isEmpty(message)) {
-
-
+        if (!TextUtils.isEmpty(message)) {
             HashMap<String, String> map = new HashMap<>();
             map.put("data", message);
-            RequestUtils.decryptdata(this, map, new MyObserver<EncryptBean>(this, false) {
+            RequestUtils.decryptData(this, map, new MyObserver<EncryptBean>(this, false) {
                 @Override
                 public void onSuccess(BaseResponse<EncryptBean> result) {
                     if (result != null) {
                         String code = result.getCode();
-                        int intcode = Integer.parseInt(code);
-                        if (intcode == 200) {
-                            String message1 = result.getMessage();
-                            String message2 = result.getResult().getMessage();
+                        int integerCode = Integer.parseInt(code);
+                        String message1 = result.getMessage();
+                        if (integerCode == 200) {
+                            String message2 = result.getResult().getEncryptOrDecrypt();
                             Toast.makeText(EncryptOrDecryptActivity.this, message1, Toast.LENGTH_SHORT).show();
                             binding.result.setText(message2);
                         } else {
-                            String message1 = result.getMessage();
                             Toast.makeText(EncryptOrDecryptActivity.this, message1 + "解密失败，请指纹解密", Toast.LENGTH_SHORT).show();
                             TeeSimManagerdecrypt(message);
                         }

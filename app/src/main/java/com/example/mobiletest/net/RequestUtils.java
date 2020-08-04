@@ -47,9 +47,9 @@ public class RequestUtils {
     /***
      *  数据加密
      */
-    public static void encryptdata(Activity context, HashMap<String, String> map, MyObserver<EncryptBean> observer) {
+    public static void encryptData(Activity context, HashMap<String, String> map, MyObserver<EncryptBean> observer) {
         RetrofitUtils.getApiUrl()
-                .encryptdata(map).compose(RxHelper.observableIO2Main(context))
+                .encryptData(map).compose(RxHelper.observableIO2Main(context))
                 .subscribe(observer);
     }
 
@@ -59,9 +59,9 @@ public class RequestUtils {
      * @param map
      * @param observer
      */
-    public static void decryptdata(Activity context, HashMap<String, String> map, MyObserver<EncryptBean> observer) {
+    public static void decryptData(Activity context, HashMap<String, String> map, MyObserver<EncryptBean> observer) {
         RetrofitUtils.getApiUrl()
-                .decryptdata(map).compose(RxHelper.observableIO2Main(context))
+                .decryptData(map).compose(RxHelper.observableIO2Main(context))
                 .subscribe(observer);
     }
 

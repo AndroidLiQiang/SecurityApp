@@ -56,16 +56,46 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.example.mobiletest.view.ClearEditView
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+        <TextView
+            android:id="@+id/msg5GText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="35dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="35dp"
-            android:hint="请输入内容"
-            android:textSize="14sp"
+            android:text="@string/msg_5g_text"
+            android:textColor="#FF333333"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <com.example.mobiletest.view.ClearEditView
+            android:id="@+id/message"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/message_edit_hint"
+            android:textSize="14sp"
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/get5GMsg"
+            app:layout_constraintTop_toBottomOf="@+id/msg5GText" />
+
+        <Button
+            android:id="@+id/get5GMsg"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ripple_bg"
+            android:onClick="@{()->ed.get5GMsg()}"
+            android:text="@string/get_5g_msg"
+            android:textColor="@color/textColor"
+            app:layout_constraintBaseline_toBaselineOf="@+id/message"
+            app:layout_constraintBottom_toBottomOf="@+id/message"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/message"
+            app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/resultText"
@@ -73,47 +103,82 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:text="加解密结果:"
+            android:text="@string/local_5g_msg_save"
             android:textColor="#FF333333"
             app:layout_constraintLeft_toLeftOf="@+id/message"
             app:layout_constraintTop_toBottomOf="@+id/message" />
 
         <TextView
             android:id="@+id/result"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="35dp"
-            android:text="~~~~~"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/local_5g_msg"
             android:textColor="#FF333333"
+            android:textSize="14sp"
+            app:layout_constraintHorizontal_weight="2"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/save5GMsg"
             app:layout_constraintTop_toBottomOf="@+id/resultText" />
 
         <Button
+            android:id="@+id/save5GMsg"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ripple_bg"
+            android:onClick="@{()->ed.save5GMsg()}"
+            android:text="@string/save_5g_msg"
+            android:textColor="@color/textColor"
+            app:layout_constraintBaseline_toBaselineOf="@+id/result"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/result"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
             android:id="@+id/encrypt"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/ripple_bg"
             android:onClick="@{()->ed.encrypt()}"
             android:text="@string/encryption"
             android:textColor="@color/textColor"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/decrypt"
             app:layout_constraintTop_toBottomOf="@+id/result" />
 
         <Button
             android:id="@+id/decrypt"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/ripple_bg"
             android:onClick="@{()->ed.decrypt()}"
             android:text="@string/decryption"
             android:textColor="@color/textColor"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/encrypt"
+            app:layout_constraintRight_toLeftOf="@+id/clear"
+            app:layout_constraintTop_toTopOf="@id/encrypt" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ripple_bg"
+            android:onClick="@{()->ed.clear()}"
+            android:text="@string/clear"
+            android:textColor="@color/textColor"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintLeft_toRightOf="@+id/decrypt"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/encrypt" />
+            app:layout_constraintTop_toTopOf="@id/encrypt" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

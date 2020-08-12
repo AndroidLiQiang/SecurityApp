@@ -1,5 +1,6 @@
 package com.example.mobiletest.ui.test5g;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import com.example.mobiletest.databinding.ActivityEncryptOrDecryptBinding;
 import com.example.mobiletest.net.BaseResponse;
 import com.example.mobiletest.net.MyObserver;
 import com.example.mobiletest.net.RequestUtils;
+import com.example.mobiletest.util.SPUtil;
 import com.example.teesimmanager.TeeSimManager;
 
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import java.util.HashMap;
  */
 public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecryptBinding> implements TeeSimManager.IDecryptCallback {
 
+    private String messagetest = "测试5G消息";
 
     @Override
     protected int getLayoutId() {
@@ -34,17 +37,77 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding.setVariable(BR.ed, this);
+
     }
 
     /**
      * 接收5g消息
      */
-    public void get5GMsg() {}
+    public void get5GMsg() {
+        binding.message.setText(messagetest);
+        encrypt(messagetest);
+        /*String encrypt = AESCBCUtil.encrypt(messagetest);
+        if (encrypt != null && !TextUtils.isEmpty(encrypt)) {
+            SPUtil.putString("encrypt", encrypt);
+        }
+*/
+    }
 
     /**
      * 保存5g消息
      */
-    public void save5GMsg() {}
+    public void save5GMsg() {
+        String encrypt = SPUtil.getString("encrypt", "");
+        if (encrypt != null && !TextUtils.isEmpty(encrypt)) {
+            binding.result.setText(encrypt);
+        }
+
+    }
+
+    /**
+     * 加密
+     */
+    public void encrypt(String message) {
+        //String message = binding.message.getText().toString();
+        if (!TextUtils.isEmpty(message)) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("data", message);
+            RequestUtils.encryptData(this, map, new MyObserver<EncryptBean>(this, false) {
+                @Override
+                public void onSuccess(BaseResponse<EncryptBean> result) {
+                    if (result != null) {
+                        String code = result.getCode();
+                        int integerCode = Integer.parseInt(code);
+                        String message = result.getMessage();
+                        if (integerCode == 200) {
+                            String message1 = result.getResult().getEncryptOrDecrypt();
+                            Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
+                           // binding.result.setText(message1);
+                            SPUtil.putString("encrypt",message1);
+                        } else {
+                            Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable e, String errorMsg) {
+                    Toast.makeText(EncryptOrDecryptActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "请输入要加密的消息", Toast.LENGTH_SHORT).show();
+        }
+        /*if (mseeage != null && !TextUtils.isEmpty(mseeage)) {
+            byte[] encrypt = TeeSimManager.getInstance().encrypt(mseeage.getBytes());
+            Toast.makeText(this, "加密" + encrypt, Toast.LENGTH_SHORT).show();
+            binding.result.setText(encrypt + "");
+            return encrypt;
+        } else {
+            Toast.makeText(this, "请输入要加密的消息", Toast.LENGTH_SHORT).show();
+        }
+        return null;*/
+    }
 
     /**
      * 加密
@@ -65,6 +128,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                             String message1 = result.getResult().getEncryptOrDecrypt();
                             Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
                             binding.result.setText(message1);
+                            SPUtil.putString("encrypt",message1);
                         } else {
                             Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
@@ -108,13 +172,12 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                         if (integerCode == 200) {
                             String message2 = result.getResult().getEncryptOrDecrypt();
                             Toast.makeText(EncryptOrDecryptActivity.this, message1, Toast.LENGTH_SHORT).show();
-                            binding.result.setText(message2);
+                            binding.message.setText(message2);
                         } else {
                             Toast.makeText(EncryptOrDecryptActivity.this, message1 + "解密失败，请指纹解密", Toast.LENGTH_SHORT).show();
                             TeeSimManagerdecrypt(message);
                         }
                     }
-
                 }
 
                 @Override
@@ -123,6 +186,8 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                     TeeSimManagerdecrypt(message);
                 }
             });
+        } else {
+            Toast.makeText(this, "请先进行加密", Toast.LENGTH_SHORT).show();
         }
         /* *//****
          * 正常解密
@@ -151,7 +216,12 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     /**
      * 清除
      */
-    public void clear() {}
+    public void clear() {
+
+        binding.message.setText("");
+        binding.result.setText("");
+        SPUtil.clear();
+    }
 
     private void TeeSimManagerdecrypt(String message) {
         TeeSimManager.getInstance().decrypt(EncryptOrDecryptActivity.this, message.getBytes(), this);

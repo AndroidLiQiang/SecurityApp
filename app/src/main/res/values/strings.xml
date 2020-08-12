@@ -5,8 +5,8 @@
     <string name="encrypt_or_decrypt">5G消息加解密</string>
     <string name="online_pay">在线支付</string>
     <string name="nfc_pay">NFC支付</string>
-    <string name="encryption">加密</string>
-    <string name="decryption">解密</string>
+    <string name="encryption">5G消息加密</string>
+    <string name="decryption">本地5G消息解密</string>
     <string name="test_based_on_SIM_card">基于SIM卡的终端基础安全测试</string>
     <string name="test_5g_msg">5G消息测试</string>
     <string name="a_key_login">一键登陆测试</string>
@@ -19,4 +19,11 @@
     <string name="pay_result">支付结果</string>
     <string name="pay_success">支付成功</string>
     <string name="back_home">返回主页</string>
+    <string name="clear">清除</string>
+    <string name="save_5g_msg">5G消息本地储存</string>
+    <string name="local_5g_msg">本地密文5G消息</string>
+    <string name="local_5g_msg_save">本地5G消息密文储存:</string>
+    <string name="get_5g_msg">接收5G消息</string>
+    <string name="message_edit_hint">接收到的5G消息可手动修改</string>
+    <string name="msg_5g_text">5G消息显示:</string>
 </resources>

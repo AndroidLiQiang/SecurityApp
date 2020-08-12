@@ -13,6 +13,7 @@ import com.example.mobiletest.databinding.ActivityMainBinding;
 import com.example.mobiletest.net.BaseResponse;
 import com.example.mobiletest.net.MyObserver;
 import com.example.mobiletest.net.RequestUtils;
+import com.example.mobiletest.ui.login.LoginResultActivity;
 import com.example.mobiletest.ui.test5g.Test5GMsgActivity;
 import com.example.teesimmanager.TeeSimManager;
 
@@ -79,6 +80,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
             @Override
             public void onSuccess(BaseResponse<MacBean> result) {
                 Toast.makeText(MainActivity.this, "" + result.getResult().getMac(), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, LoginResultActivity.class));
             }
 
             @Override

@@ -51,13 +51,13 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                     if (result != null) {
                         String code = result.getCode();
                         int integerCode = Integer.parseInt(code);
-                        String message = result.getMessage();
+                        String errormessage = result.getMessage();
                         if (integerCode == 200) {
                             String message1 = result.getResult().getEncryptOrDecrypt();
-                            Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EncryptOrDecryptActivity.this, errormessage, Toast.LENGTH_SHORT).show();
                             binding.result.setText(message1);
                         } else {
-                            Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EncryptOrDecryptActivity.this, errormessage, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -97,23 +97,26 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                         int integerCode = Integer.parseInt(code);
                         String message1 = result.getMessage();
                         if (integerCode == 200) {
-                            String message2 = result.getResult().getEncryptOrDecrypt();
+                            String ecryptMessage = result.getResult().getEncryptOrDecrypt();
                             Toast.makeText(EncryptOrDecryptActivity.this, message1, Toast.LENGTH_SHORT).show();
-                            binding.result.setText(message2);
+                            binding.result.setText(ecryptMessage);
                         } else {
                             Toast.makeText(EncryptOrDecryptActivity.this, message1 + "解密失败，请指纹解密", Toast.LENGTH_SHORT).show();
+                            //正常解密失败   指纹验证解密
                             TeeSimManagerdecrypt(message);
                         }
                     }
-
                 }
 
                 @Override
                 public void onFailure(Throwable e, String errorMsg) {
                     Toast.makeText(EncryptOrDecryptActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                    //正常解密失败   指纹验证解密
                     TeeSimManagerdecrypt(message);
                 }
             });
+        } else {
+            Toast.makeText(this, "请先加密，生成加密数据后再解密", Toast.LENGTH_SHORT).show();
         }
         /* *//****
          * 正常解密

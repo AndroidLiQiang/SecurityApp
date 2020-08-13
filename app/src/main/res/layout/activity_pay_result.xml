@@ -74,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="@string/pay_success"
+            android:textSize="@dimen/content_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/successImg" />
@@ -89,6 +90,7 @@
             android:onClick="@{()->payResult.goMain()}"
             android:text="@string/back_home"
             android:textColor="@color/textColor"
+            android:textSize="@dimen/button_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/payResult" />

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
-import com.example.mobiletest.databinding.ActivityTest5GMsgBinding;
+import com.example.mobiletest.databinding.ActivityTest5gMsgBinding;
 
 /**
  * author : liqiang
@@ -14,11 +14,11 @@ import com.example.mobiletest.databinding.ActivityTest5GMsgBinding;
  * date   : 2020/7/9
  * desc   : 5G消息测试入口
  */
-public class Test5GMsgActivity extends BaseActivity<ActivityTest5GMsgBinding> {
+public class Test5GMsgActivity extends BaseActivity<ActivityTest5gMsgBinding> {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_test5_g_msg;
+        return R.layout.activity_test_5g_msg;
     }
 
     @Override

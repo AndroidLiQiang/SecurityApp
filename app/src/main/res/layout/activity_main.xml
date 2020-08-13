@@ -50,9 +50,10 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="35dp"
             android:background="@drawable/ripple_bg"
-            android:textColor="@color/textColor"
             android:onClick="@{()->main.goLogin()}"
             android:text="@string/a_key_to_login"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/button_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -68,6 +69,7 @@
             android:onClick="@{()->main.goTest5GMsg()}"
             android:text="@string/_5g_message_security_tests"
             android:textColor="@color/textColor"
+            android:textSize="@dimen/button_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/aKeyLogin" />

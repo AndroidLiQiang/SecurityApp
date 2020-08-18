@@ -48,7 +48,7 @@ public class RetrofitUtils {
     private Retrofit initRetrofit(OkHttpClient client) {
         return new Retrofit.Builder()
                 .client(client)
-                .baseUrl(Constans.BaseUrl)
+                .baseUrl(Constants.BaseUrl)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -60,9 +60,9 @@ public class RetrofitUtils {
     @NonNull
     private OkHttpClient initOkHttp() {
         return new OkHttpClient().newBuilder()
-                .readTimeout(Constans.DEFAULT_TIME, TimeUnit.SECONDS)//设置读取超时时间
-                .connectTimeout(Constans.DEFAULT_TIME, TimeUnit.SECONDS)//设置请求超时时间
-                .writeTimeout(Constans.DEFAULT_TIME, TimeUnit.SECONDS)//设置写入超时时间
+                .readTimeout(Constants.DEFAULT_TIME, TimeUnit.SECONDS)//设置读取超时时间
+                .connectTimeout(Constants.DEFAULT_TIME, TimeUnit.SECONDS)//设置请求超时时间
+                .writeTimeout(Constants.DEFAULT_TIME, TimeUnit.SECONDS)//设置写入超时时间
                 .addInterceptor(new LogInterceptor())//添加打印拦截器
                 .retryOnConnectionFailure(true)//设置出现错误进行重新连接。
                 .build();

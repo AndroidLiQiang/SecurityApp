@@ -76,5 +76,6 @@ dependencies {
     implementation libs.immersionbar
     implementation libs.lottie
     implementation libs.autosize
+    implementation libs.recyclerview
     implementation(name: 'teesimmanager-debug', ext: 'aar')
 }

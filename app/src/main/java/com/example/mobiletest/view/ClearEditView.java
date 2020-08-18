@@ -105,9 +105,10 @@ public class ClearEditView extends androidx.appcompat.widget.AppCompatEditText i
      * @param visible
      */
     protected void setClearIconVisible(boolean visible) {
-        Drawable right = visible ? mClearDrawable : null;
+        //TODO 清除图表显示 null
+//        Drawable right = visible ? mClearDrawable : null;
         setCompoundDrawables(getCompoundDrawables()[0],
-                getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
+                getCompoundDrawables()[1], null, getCompoundDrawables()[3]);
     }
 
 

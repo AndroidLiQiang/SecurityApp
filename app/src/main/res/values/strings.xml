@@ -26,4 +26,5 @@
     <string name="get_5g_msg">接收5G消息</string>
     <string name="message_edit_hint">接收到的5G消息可手动修改</string>
     <string name="msg_5g_text">5G消息显示:</string>
+    <string name="delete">删除</string>
 </resources>

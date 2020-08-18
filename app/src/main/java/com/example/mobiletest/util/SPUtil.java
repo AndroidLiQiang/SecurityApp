@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.mobiletest.App;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.List;
 
 
 /**
@@ -14,17 +16,30 @@ import java.util.Set;
  */
 public class SPUtil {
 
-    private static String KEY = "Mobile";
-
     private static SharedPreferences getSp() {
-        SharedPreferences sp = App.getInstance().getSharedPreferences(KEY, Context.MODE_PRIVATE);
-        return sp;
+        String KEY = "mobile";
+        return App.getInstance().getSharedPreferences(KEY, Context.MODE_PRIVATE);
     }
 
+    public static void putList(String key, List<String> value) {
+        SharedPreferences sp = getSp();
+        Gson gson = new Gson();
+        String data = gson.toJson(value);
+        sp.edit().putString(key, data).apply();
+    }
+
+    public static List<String> getList(String key) {
+        SharedPreferences sp = getSp();
+        String data = sp.getString(key, "");
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<String>>() {
+        }.getType();
+        return gson.fromJson(data, listType);
+    }
 
     public static void putString(String key, String value) {
         SharedPreferences sp = getSp();
-        sp.edit().putString(key, value).commit();
+        sp.edit().putString(key, value).apply();
     }
 
 
@@ -42,11 +57,11 @@ public class SPUtil {
         SharedPreferences sp = getSp();
         SharedPreferences.Editor editor = sp.edit();
         editor.remove(key);
-        editor.commit();
+        editor.apply();
     }
 
     public static void clear() {
         SharedPreferences sp = getSp();
-        sp.edit().clear().commit();
+        sp.edit().clear().apply();
     }
 }

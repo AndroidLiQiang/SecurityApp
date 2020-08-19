@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.mobiletest.App;
+import com.example.mobiletest.bean.ResultBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,18 +22,18 @@ public class SPUtil {
         return App.getInstance().getSharedPreferences(KEY, Context.MODE_PRIVATE);
     }
 
-    public static void putList(String key, List<String> value) {
+    public static void putList(String key, List<ResultBean> value) {
         SharedPreferences sp = getSp();
         Gson gson = new Gson();
         String data = gson.toJson(value);
         sp.edit().putString(key, data).apply();
     }
 
-    public static List<String> getList(String key) {
+    public static List<ResultBean> getList(String key) {
         SharedPreferences sp = getSp();
         String data = sp.getString(key, "");
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<String>>() {
+        Type listType = new TypeToken<List<ResultBean>>() {
         }.getType();
         return gson.fromJson(data, listType);
     }

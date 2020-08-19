@@ -1,9 +1,11 @@
 package com.example.mobiletest.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobiletest.R;
+import com.example.mobiletest.bean.ResultBean;
 
 import java.util.List;
 
@@ -22,11 +25,11 @@ import java.util.List;
  */
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHolder> {
     private Context context;
-    private List<String> data;
+    private List<ResultBean> data;
     private OnItemClickListener onItemClickListener;
     private boolean isRemove = false;
 
-    public ResultAdapter(Context context, List<String> data) {
+    public ResultAdapter(Context context, List<ResultBean> data) {
         this.context = context;
         this.data = data;
     }
@@ -42,12 +45,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
         }
     }
 
-    public void addItem(String item) {
+    public void addItem(ResultBean item) {
         data.add(0, item);
         notifyItemInserted(0);
     }
 
-    public List<String> getData() {
+    public List<ResultBean> getData() {
         return data;
     }
 
@@ -62,10 +65,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
         return new MyViewHolder(v);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.result.setText(data.get(position));
-        holder.result.setOnFocusChangeListener((view, b) -> {
+        holder.time.setText(data.get(position).getTime());
+        holder.result.setText(data.get(position).getContent());
+        holder.item.setOnFocusChangeListener((view, b) -> {
             if (b) {
                 onItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition());
                 isRemove = true;
@@ -90,10 +95,14 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView result;
+        TextView time;
+        LinearLayout item;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             result = itemView.findViewById(R.id.result);
+            time = itemView.findViewById(R.id.time);
+            item = itemView.findViewById(R.id.item);
         }
     }
 }

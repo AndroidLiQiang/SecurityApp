@@ -14,6 +14,7 @@ import com.example.mobiletest.R;
 import com.example.mobiletest.adapter.ResultAdapter;
 import com.example.mobiletest.base.BaseActivity;
 import com.example.mobiletest.bean.EncryptBean;
+import com.example.mobiletest.bean.ResultBean;
 import com.example.mobiletest.databinding.ActivityEncryptOrDecryptBinding;
 import com.example.mobiletest.net.BaseResponse;
 import com.example.mobiletest.net.Constants;
@@ -23,7 +24,9 @@ import com.example.mobiletest.util.SPUtil;
 import com.example.mobiletest.util.StringUtil;
 import com.example.teesimmanager.TeeSimManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +40,7 @@ import java.util.Objects;
 public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecryptBinding> implements TeeSimManager.IDecryptCallback {
 
     private int position;
-    private List<String> data = new ArrayList<>();
+    private List<ResultBean> data = new ArrayList<>();
     private ResultAdapter resultAdapter;
 
     @Override
@@ -74,8 +77,9 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     /**
      * 接收5g消息
      */
+    @SuppressLint("SetTextI18n")
     public void get5GMsg() {
-        binding.message.setText(StringUtil.getRandomString(6));
+        binding.message.setText(getTime() + " 5G消息 " + StringUtil.getRandomString(6));
         /*String encrypt = AESCBCUtil.encrypt(messagetest);
         if (encrypt != null && !TextUtils.isEmpty(encrypt)) {
             SPUtil.putString("encrypt", encrypt);
@@ -107,7 +111,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                         if (integerCode == 200) {
                             String message1 = result.getResult().getEncryptOrDecrypt();
                             Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
-                            resultAdapter.addItem(message1);
+                            resultAdapter.addItem(new ResultBean(message1, getTime()));
                             binding.recyclerView.smoothScrollToPosition(0);
                         } else {
                             Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -141,7 +145,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
         if (!resultAdapter.getItemIsSelect()) {
             Toast.makeText(this, "请选择条目", Toast.LENGTH_SHORT).show();
         } else {
-            String message = resultAdapter.getData().get(position);
+            String message = resultAdapter.getData().get(position).getContent();
             if (!TextUtils.isEmpty(message)) {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("data", message);
@@ -206,6 +210,18 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     public void delete() {
         resultAdapter.removedItem(position);
         SPUtil.putList(Constants.DATA_LIST, resultAdapter.getData());
+    }
+
+    /**
+     * 获取时间
+     *
+     * @return
+     */
+    public String getTime() {
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+        return dateFormat.format(date);
     }
 
     private void teeSimManagerDecrypt(String message) {

@@ -1,7 +1,7 @@
 package com.example.mobiletest.net;
 
 import com.example.mobiletest.App;
-import com.example.mobiletest.util.WifiUtil;
+import com.example.mobiletest.util.NetUtil;
 
 public class Constants {
 
@@ -11,5 +11,5 @@ public class Constants {
     //加密数据key
     public static final String DATA_LIST = "dataList";
 
-    public final static String BaseUrl = "http://"+ WifiUtil.getIP(App.getInstance().getApplicationContext())+":5050/";
+    public final static String BaseUrl = "http://"+ NetUtil.getIP(App.getInstance().getApplicationContext())+":5050/";
 }

@@ -2,7 +2,6 @@ package com.example.mobiletest.ui.test5g;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
@@ -12,6 +11,7 @@ import com.example.mobiletest.databinding.ActivityPayBinding;
 import com.example.mobiletest.net.BaseResponse;
 import com.example.mobiletest.net.MyObserver;
 import com.example.mobiletest.net.RequestUtils;
+import com.example.mobiletest.util.FingerManager;
 import com.example.teesimmanager.TeeSimManager;
 
 import java.util.HashMap;
@@ -41,10 +41,20 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
     public void goPay() {
         if (getTarget()) {
             //线上交易认证，需要用户指纹比对
-            TeeSimManager.getInstance().authenticateOnline(this, "test".getBytes(), this::verifySign);
+            switch (FingerManager.checkSupport(PayActivity.this)) {
+                case DEVICE_UNSUPPORTED:
+                    showToast("您的设备不支持指纹");
+                    break;
+                case SUPPORT_WITHOUT_DATA:
+                    showToast("请在系统录入指纹后再验证");
+                    break;
+                case SUPPORT:
+                    TeeSimManager.getInstance().authenticateOnline(this, "test".getBytes(), this::verifySign);
+                    break;
+            }
         } else {
             //TODO NFC
-            Toast.makeText(PayActivity.this, "nfc支付", Toast.LENGTH_SHORT).show();
+            showToast("nfc支付");
         }
     }
 
@@ -58,7 +68,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         RequestUtils.verifySign(this, map, new MyObserver<PayBean>(this, true) {
             @Override
             public void onSuccess(BaseResponse<PayBean> result) {
-                Toast.makeText(PayActivity.this, "" + result.getResult().getSign(), Toast.LENGTH_SHORT).show();
+                showToast(result.getResult().getSign());
                 jumpPage();
             }
 

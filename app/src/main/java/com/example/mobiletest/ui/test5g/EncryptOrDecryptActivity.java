@@ -110,12 +110,13 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                         String message = result.getMessage();
                         if (integerCode == 200) {
                             String message1 = result.getResult().getEncryptOrDecrypt();
-                            Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
+                            showToast(message);
                             resultAdapter.addItem(new ResultBean(message1, getTime()));
                             binding.recyclerView.smoothScrollToPosition(0);
                         } else {
-                            Toast.makeText(EncryptOrDecryptActivity.this, message, Toast.LENGTH_SHORT).show();
+                            showToast(message);
                         }
+                        save5GMsg();
                     }
                 }
 
@@ -125,7 +126,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                 }
             });
         } else {
-            Toast.makeText(this, "请输入要加密的消息", Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.please_input_encrypt_msg));
         }
         /*if (mseeage != null && !TextUtils.isEmpty(mseeage)) {
             byte[] encrypt = TeeSimManager.getInstance().encrypt(mseeage.getBytes());
@@ -143,7 +144,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      */
     public void decrypt() {
         if (!resultAdapter.getItemIsSelect()) {
-            Toast.makeText(this, "请选择条目", Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.select_item));
         } else {
             String message = resultAdapter.getData().get(position).getContent();
             if (!TextUtils.isEmpty(message)) {
@@ -158,10 +159,10 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
                             String message1 = result.getMessage();
                             if (integerCode == 200) {
                                 String message2 = result.getResult().getEncryptOrDecrypt();
-                                Toast.makeText(EncryptOrDecryptActivity.this, message1, Toast.LENGTH_SHORT).show();
+                                showToast(message1);
                                 binding.message.setText(message2);
                             } else {
-                                Toast.makeText(EncryptOrDecryptActivity.this, message1 + "解密失败，请指纹解密", Toast.LENGTH_SHORT).show();
+                                showToast(message1);
                                 teeSimManagerDecrypt(message);
                             }
                         }
@@ -169,12 +170,12 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
 
                     @Override
                     public void onFailure(Throwable e, String errorMsg) {
-                        Toast.makeText(EncryptOrDecryptActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                        showToast(errorMsg);
                         teeSimManagerDecrypt(message);
                     }
                 });
             } else {
-                Toast.makeText(this, "请先进行加密", Toast.LENGTH_SHORT).show();
+                showToast(getString(R.string.please_encrypt));
             }
         /*//正常解密
         byte[] encrypt;
@@ -214,8 +215,6 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
 
     /**
      * 获取时间
-     *
-     * @return
      */
     public String getTime() {
         Date date = new Date();
@@ -233,17 +232,13 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
         if (bytes != null) {
             String message = new String(bytes);
             if (!TextUtils.isEmpty(message)) {
-
-                Toast.makeText(this, "解密后的消息为" + message, Toast.LENGTH_SHORT).show();
-
+                showToast("解密后的消息为" + message);
             } else {
-
-                Toast.makeText(this, "解密失败", Toast.LENGTH_SHORT).show();
-
+                showToast("解密失败");
                 TeeSimManager.getInstance().decrypt(this, bytes, this);
             }
         } else {
-            Toast.makeText(this, "解密数据为空", Toast.LENGTH_SHORT).show();
+            showToast("解密数据为空");
         }
     }
 }

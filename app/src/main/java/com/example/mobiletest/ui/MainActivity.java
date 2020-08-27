@@ -2,7 +2,6 @@ package com.example.mobiletest.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
@@ -56,7 +55,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         RequestUtils.getRandom(this, map, new MyObserver<RandomBean>(this, false) {
             @Override
             public void onSuccess(BaseResponse<RandomBean> result) {
-                Toast.makeText(MainActivity.this, "" + result.getMessage(), Toast.LENGTH_SHORT).show();
+                showToast(result.getMessage());
                 //获取mac
                 byte[] mac = TeeSimManager.getInstance().anthenticate(result.getResult().getRandom().getBytes());
                 verifyMac(mac);
@@ -64,7 +63,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
             @Override
             public void onFailure(Throwable e, String errorMsg) {
-                Toast.makeText(MainActivity.this, "" + errorMsg, Toast.LENGTH_SHORT).show();
+                showToast(errorMsg);
             }
         });
     }
@@ -79,13 +78,13 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         RequestUtils.verifyMac(this, map, new MyObserver<MacBean>(this, true) {
             @Override
             public void onSuccess(BaseResponse<MacBean> result) {
-                Toast.makeText(MainActivity.this, "" + result.getResult().getMac(), Toast.LENGTH_SHORT).show();
+                showToast(result.getResult().getMac());
                 startActivity(new Intent(MainActivity.this, LoginResultActivity.class));
             }
 
             @Override
             public void onFailure(Throwable e, String errorMsg) {
-                Toast.makeText(MainActivity.this, "" + errorMsg, Toast.LENGTH_SHORT).show();
+                showToast(errorMsg);
             }
         });
     }

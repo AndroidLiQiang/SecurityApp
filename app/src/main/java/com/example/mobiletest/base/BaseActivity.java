@@ -2,22 +2,24 @@ package com.example.mobiletest.base;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.viewbinding.ViewBinding;
+import androidx.databinding.ViewDataBinding;
 
 import com.gyf.immersionbar.ImmersionBar;
 
 import me.jessyan.autosize.AutoSizeCompat;
+
 /**
  * author : liqiang
  * e-mail : qiang_li1@asdc.com.cn
  * time   : 2020/07/09
  * desc   : BaseActivity
  */
-public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActivity {
+public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatActivity {
 
     protected T binding;
 
@@ -27,11 +29,15 @@ public abstract class BaseActivity<T extends ViewBinding> extends AppCompatActiv
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initImmersionBar();
-        binding = (T) DataBindingUtil.setContentView(this, getLayoutId());
+        binding = DataBindingUtil.setContentView(this, getLayoutId());
     }
 
     public void back() {
         finish();
+    }
+
+    public void showToast(String content) {
+        Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
     }
 
     private void initImmersionBar() {

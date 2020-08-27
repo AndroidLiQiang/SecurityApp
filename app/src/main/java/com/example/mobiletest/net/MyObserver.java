@@ -2,11 +2,10 @@ package com.example.mobiletest.net;
 
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
 import android.widget.Toast;
 
 import com.example.mobiletest.R;
+import com.example.mobiletest.util.NetUtil;
 import com.example.mobiletest.view.LoadingDialog;
 
 import io.reactivex.disposables.Disposable;
@@ -28,14 +27,10 @@ public abstract class MyObserver<T> extends BaseObserver<T> {
         mShowDialog = showDialog;
     }
 
-    public MyObserver(Context context) {
-        this(context, true);
-    }
-
     @Override
     public void onSubscribe(Disposable d) {
         this.d = d;
-        if (!isConnected(mContext)) {
+        if (!NetUtil.isConnected(mContext)) {
             Toast.makeText(mContext, "未连接网络", Toast.LENGTH_SHORT).show();
             if (d.isDisposed()) {
                 d.dispose();
@@ -73,22 +68,6 @@ public abstract class MyObserver<T> extends BaseObserver<T> {
         if (dialog != null && mShowDialog)
             dialog.dismiss();
         dialog = null;
-    }
-
-    /**
-     * 是否有网络连接，不管是wifi还是数据流量
-     */
-    public static boolean isConnected(Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager != null) {
-            NetworkCapabilities networkCapabilities = manager.getNetworkCapabilities(manager.getActiveNetwork());
-            if (networkCapabilities != null) {
-                return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
-            }
-        }
-        return false;
     }
 
     /**

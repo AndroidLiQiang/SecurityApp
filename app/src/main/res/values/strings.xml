@@ -27,4 +27,7 @@
     <string name="message_edit_hint">接收到的5G消息可手动修改</string>
     <string name="msg_5g_text">5G消息显示:</string>
     <string name="delete">删除</string>
+    <string name="please_input_encrypt_msg">请输入要加密的消息</string>
+    <string name="select_item">请选择条目</string>
+    <string name="please_encrypt">请先进行加密</string>
 </resources>

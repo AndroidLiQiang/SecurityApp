@@ -55,6 +55,12 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         } else {
             //TODO NFC
             showToast("nfc支付");
+            TeeSimManager.getInstance().authenticateNFC(this, "test".getBytes(), new TeeSimManager.IAuthenticateNFCCallback() {
+                @Override
+                public void onAuthenticateCallback(boolean b) {
+                    showToast(b + "");
+                }
+            });
         }
     }
 

@@ -1,7 +1,9 @@
 package com.example.mobiletest.ui.test5g;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -140,7 +142,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     }
 
     /**
-     * 解密
+     * 解密 TODO 解密失败逻辑
      */
     public void decrypt() {
         if (!resultAdapter.getItemIsSelect()) {
@@ -211,6 +213,32 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     public void delete() {
         resultAdapter.removedItem(position);
         SPUtil.putList(Constants.DATA_LIST, resultAdapter.getData());
+    }
+
+    public void judgeSimState() {
+        TelephonyManager manager = (TelephonyManager) getApplicationContext().
+                getSystemService(Context.TELEPHONY_SERVICE);
+        int simState = manager.getSimState();
+        switch (simState) {
+            case TelephonyManager.SIM_STATE_UNKNOWN: //0未知状态
+            case TelephonyManager.SIM_STATE_ABSENT:  //1没有SIM卡
+                //TODO 回调暂且为接口解密
+                TeeSimManager.getInstance().decrypt(EncryptOrDecryptActivity.this,
+                        resultAdapter.getData().get(position).getContent().getBytes(),
+                        bytes -> decrypt());
+                break;
+            case TelephonyManager.SIM_STATE_READY: //5良好
+                decrypt();
+                break;
+            case TelephonyManager.SIM_STATE_CARD_IO_ERROR:
+            case TelephonyManager.SIM_STATE_CARD_RESTRICTED:
+            case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
+            case TelephonyManager.SIM_STATE_NOT_READY:
+            case TelephonyManager.SIM_STATE_PERM_DISABLED:
+            case TelephonyManager.SIM_STATE_PIN_REQUIRED:
+            case TelephonyManager.SIM_STATE_PUK_REQUIRED:
+                break;
+        }
     }
 
     /**

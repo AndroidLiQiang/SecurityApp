@@ -7,15 +7,13 @@
     <string name="nfc_pay">NFC支付</string>
     <string name="encryption">5G消息加密</string>
     <string name="decryption">本地5G消息解密</string>
-    <string name="test_based_on_SIM_card">基于SIM卡的终端基础安全测试</string>
+    <string name="test_based_on_SIM_card">基于SIM卡的终端基础安全能力演示</string>
     <string name="test_5g_msg">5G消息测试</string>
     <string name="a_key_login">一键登陆测试</string>
     <string name="online_pay_test">在线支付测试</string>
     <string name="nfc_pay_test">NFC支付测试</string>
     <string name="pay">支付</string>
     <string name="login_success">登录成功</string>
-    <string name="nfc_pay_success">NFC支付成功</string>
-    <string name="online_pay_success">在线支付成功</string>
     <string name="pay_result">支付结果</string>
     <string name="pay_success">支付成功</string>
     <string name="back_home">返回主页</string>
@@ -30,4 +28,15 @@
     <string name="please_input_encrypt_msg">请输入要加密的消息</string>
     <string name="select_item">请选择条目</string>
     <string name="please_encrypt">请先进行加密</string>
+    <string name="service_name">基于SIM卡的终端NFCPay</string>
+    <string name="card_title">DTU</string>
+    <string name="test_msg1">【充值成功】尊敬的客户，您好！您通过移动商城成功交费9.98元，赠费0.02元，合计充值话费10.00元。
+【特惠活动】拼团享优惠，最低0元宽带+电视业务送到家。短信回复A，或点击https://dx.10086.cn/kdcz预约，工作人员将联系您办理。【中国移动】</string>
+    <string name="test_msg2">【北京移动】您的新一期话费账单已送达您的139邮箱，点击查看账单详情 http://y.10086.cn/t/eUeLaeGCr1c
+ 回Q关闭通知。体验APP领视频卡骑行券，y.10086.cn/x/qyPyl2，全心全意为您服务，期待您的十分满意【中国移动 139邮箱】</string>
+    <string name="test_msg3">【北京一卡通】验证码为103304，您正在进行快捷登录，验证码有效期为2分钟，请勿泄露。</string>
+    <string name="test_msg4">【海底捞】亲，生日月送您一张30元代金券，领取成功后当月有效。快去海底捞APP首页的热门活动点击领取吧~详询海底捞APP线上客服</string>
+    <string name="test_msg5">【优酷会员】亲爱的优酷会员，您已成功购买连续包月VIP，戳链接开始追剧吧~ https://c.tb.cn/I3.Zm1</string>
+    <string name="pay_money">支付金额:</string>
+    <string name="yuan">元</string>
 </resources>

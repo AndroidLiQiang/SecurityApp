@@ -13,7 +13,6 @@ import com.example.mobiletest.databinding.ActivityMainBinding;
 import com.example.mobiletest.net.BaseResponse;
 import com.example.mobiletest.net.MyObserver;
 import com.example.mobiletest.net.RequestUtils;
-import com.example.mobiletest.ui.login.LoginResultActivity;
 import com.example.mobiletest.ui.test5g.Test5GMsgActivity;
 import com.example.teesimmanager.TeeSimManager;
 import com.tbruyelle.rxpermissions3.RxPermissions;
@@ -72,7 +71,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         RequestUtils.getRandom(this, map, new MyObserver<RandomBean>(this, false) {
             @Override
             public void onSuccess(BaseResponse<RandomBean> result) {
-                showToast(result.getMessage());
+//                showToast(result.getMessage());
                 //获取mac
                 byte[] mac = TeeSimManager.getInstance().anthenticate(result.getResult().getRandom().getBytes());
                 verifyMac(mac);
@@ -95,8 +94,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         RequestUtils.verifyMac(this, map, new MyObserver<MacBean>(this, true) {
             @Override
             public void onSuccess(BaseResponse<MacBean> result) {
-                showToast(result.getResult().getMac());
-                startActivity(new Intent(MainActivity.this, LoginResultActivity.class));
+//                showToast(result.getResult().getMac());
+                showToast("登录成功");
+                startActivity(new Intent(MainActivity.this, Test5GMsgActivity.class));
             }
 
             @Override

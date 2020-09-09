@@ -1,7 +1,10 @@
 package com.example.mobiletest.ui.test5g;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
@@ -25,6 +28,7 @@ import java.util.HashMap;
 public class PayActivity extends BaseActivity<ActivityPayBinding> {
 
     public String titleName;
+    public String dataStr;
 
     @Override
     protected int getLayoutId() {
@@ -35,7 +39,27 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         titleName = getIntent().getStringExtra("title");
+        dataStr = getIntent().getStringExtra("data");
         binding.setVariable(BR.pay, this);
+        initData();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        dataStr = getIntent().getStringExtra("data");
+        Toast.makeText(this, ""+dataStr, Toast.LENGTH_SHORT).show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void initData() {
+        if (!getTarget()) {
+            binding.onlineCons.setVisibility(View.INVISIBLE);
+            binding.nfcMoney.setVisibility(View.VISIBLE);
+            binding.nfcMoney.setText("支付金额:" + dataStr + "元");
+        } else {
+            binding.onlineMoney.setText("10");
+        }
     }
 
     public void goPay() {
@@ -55,10 +79,9 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         } else {
             //TODO NFC
             showToast("nfc支付");
-            TeeSimManager.getInstance().authenticateNFC(this, "test".getBytes(), new TeeSimManager.IAuthenticateNFCCallback() {
-                @Override
-                public void onAuthenticateCallback(boolean b) {
-                    showToast(b + "");
+            TeeSimManager.getInstance().authenticateNFC(this, "test".getBytes(), b -> {
+                if (b) {
+                    verifySign("test".getBytes());
                 }
             });
         }
@@ -74,12 +97,13 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         RequestUtils.verifySign(this, map, new MyObserver<PayBean>(this, true) {
             @Override
             public void onSuccess(BaseResponse<PayBean> result) {
-                showToast(result.getResult().getSign());
+//                showToast(result.getResult().getSign());
                 jumpPage();
             }
 
             @Override
             public void onFailure(Throwable e, String errorMsg) {
+                showToast("支付失败请重试");
             }
         });
     }
@@ -98,8 +122,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         Intent intent = new Intent(PayActivity.this, PayResultActivity.class);
         if (getTarget()) {
             intent.putExtra("type", "online");
+            intent.putExtra("money", binding.onlineMoney.getText().toString());
         } else {
             intent.putExtra("type", "nfc");
+            intent.putExtra("money", binding.nfcMoney.getText().toString());
         }
         startActivity(intent);
         finish();

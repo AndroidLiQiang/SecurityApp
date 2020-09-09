@@ -23,7 +23,6 @@ import com.example.mobiletest.net.Constants;
 import com.example.mobiletest.net.MyObserver;
 import com.example.mobiletest.net.RequestUtils;
 import com.example.mobiletest.util.SPUtil;
-import com.example.mobiletest.util.StringUtil;
 import com.example.teesimmanager.TeeSimManager;
 
 import java.text.SimpleDateFormat;
@@ -44,6 +43,8 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     private int position;
     private List<ResultBean> data = new ArrayList<>();
     private ResultAdapter resultAdapter;
+    private int index = 0;
+    private List<String> testData = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -62,6 +63,11 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
         if (SPUtil.getList(Constants.DATA_LIST) != null) {
             data = SPUtil.getList(Constants.DATA_LIST);
         }
+        testData.add(getResources().getString(R.string.test_msg1));
+        testData.add(getResources().getString(R.string.test_msg2));
+        testData.add(getResources().getString(R.string.test_msg3));
+        testData.add(getResources().getString(R.string.test_msg4));
+        testData.add(getResources().getString(R.string.test_msg5));
     }
 
     @SuppressLint("WrongConstant")
@@ -81,7 +87,12 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      */
     @SuppressLint("SetTextI18n")
     public void get5GMsg() {
-        binding.message.setText(getTime() + " 5G消息 " + StringUtil.getRandomString(6));
+        binding.time.setText(getTime());
+        if (index == 4) {
+            index = 0;
+        }
+        binding.message.setText(testData.get(index));
+        index++;
         /*String encrypt = AESCBCUtil.encrypt(messagetest);
         if (encrypt != null && !TextUtils.isEmpty(encrypt)) {
             SPUtil.putString("encrypt", encrypt);
@@ -205,6 +216,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      */
     public void clear() {
         binding.message.setText("");
+        binding.time.setText("");
     }
 
     /**
@@ -260,7 +272,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
         if (bytes != null) {
             String message = new String(bytes);
             if (!TextUtils.isEmpty(message)) {
-                showToast("解密后的消息为" + message);
+//                showToast("解密后的消息为" + message);
             } else {
                 showToast("解密失败");
                 TeeSimManager.getInstance().decrypt(this, bytes, this);

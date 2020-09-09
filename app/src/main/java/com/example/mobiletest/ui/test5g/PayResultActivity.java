@@ -1,5 +1,6 @@
 package com.example.mobiletest.ui.test5g;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,25 +12,24 @@ import com.example.mobiletest.databinding.ActivityPayResultBinding;
 public class PayResultActivity extends BaseActivity<ActivityPayResultBinding> {
 
     private String type;
+    private String money;
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_pay_result;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = getIntent().getStringExtra("type");
+        money = getIntent().getStringExtra("money");
         binding.setVariable(BR.payResult, this);
-        if ("online".equals(type)) {
-            binding.payResult.setText(R.string.online_pay_success);
-        } else {
-            binding.payResult.setText(R.string.nfc_pay_success);
-        }
+        binding.money.setText("-" + money + "元");
     }
 
-    public void goMain(){
+    public void goMain() {
         startActivity(new Intent(this, Test5GMsgActivity.class));
         finish();
     }

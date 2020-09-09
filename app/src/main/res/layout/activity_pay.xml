@@ -68,15 +68,54 @@
             app:layout_constraintVertical_bias="0.2" />
 
         <TextView
-            android:id="@+id/money"
+            android:id="@+id/nfcMoney"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="支付金额:100元"
             android:textSize="@dimen/content_size"
+            android:visibility="invisible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/successImg" />
+            app:layout_constraintTop_toBottomOf="@+id/successImg"
+            tools:text="支付金额:100元" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/onlineCons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/successImg">
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pay_money"
+                android:textSize="@dimen/content_size"
+                app:layout_constraintBaseline_toBaselineOf="@+id/onlineMoney"
+                app:layout_constraintRight_toLeftOf="@+id/onlineMoney" />
+
+            <EditText
+                android:id="@+id/onlineMoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/content_size"
+                android:inputType="numberDecimal"
+                app:layout_constraintLeft_toRightOf="@+id/text1"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="100" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yuan"
+                android:textSize="@dimen/content_size"
+                app:layout_constraintBaseline_toBaselineOf="@+id/onlineMoney"
+                app:layout_constraintLeft_toRightOf="@+id/onlineMoney" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/pay"
@@ -92,7 +131,7 @@
             android:textSize="@dimen/button_size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/money" />
+            app:layout_constraintTop_toBottomOf="@+id/nfcMoney" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

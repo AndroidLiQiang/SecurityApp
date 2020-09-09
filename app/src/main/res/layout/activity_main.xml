@@ -65,6 +65,7 @@
             android:layout_marginLeft="35dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="35dp"
+            android:visibility="invisible"
             android:background="@drawable/ripple_bg"
             android:onClick="@{()->main.goTest5GMsg()}"
             android:text="@string/_5g_message_security_tests"

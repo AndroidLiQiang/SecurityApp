@@ -39,4 +39,6 @@
     <string name="test_msg5">【优酷会员】亲爱的优酷会员，您已成功购买连续包月VIP，戳链接开始追剧吧~ https://c.tb.cn/I3.Zm1</string>
     <string name="pay_money">支付金额:</string>
     <string name="yuan">元</string>
+    <string name="please_approach_the_pos">请靠近扣款POS机</string>
+    <string name="again_approach_the_pos">再次靠近扣款POS机支付</string>
 </resources>

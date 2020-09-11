@@ -6,15 +6,15 @@
     <data>
 
         <variable
-            name="test"
-            type="com.example.mobiletest.ui.test5g.Test5GMsgActivity" />
+            name="login"
+            type="com.example.mobiletest.ui.login.LoginResultActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        tools:context=".ui.test5g.Test5GMsgActivity">
+        tools:context=".ui.login.LoginResultActivity">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/title"
@@ -29,7 +29,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_margin="12dp"
-                android:onClick="@{()->test.back()}"
+                android:onClick="@{()->login.back()}"
                 android:src="@mipmap/ic_back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -39,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:text="@string/a_key_login"
                 android:textColor="#FF333333"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -55,53 +56,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
-            android:id="@+id/encryptOrDecrypt"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/successImg"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/ripple_bg"
-            android:onClick="@{()->test.goEncryptOrDecrypt()}"
-            android:text="@string/encrypt_or_decrypt"
-            android:textColor="@color/textColor"
-            android:textSize="@dimen/button_size"
-            app:layout_constraintBottom_toTopOf="@+id/onlinePay"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <Button
-            android:id="@+id/onlinePay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginRight="35dp"
-            android:background="@drawable/ripple_bg"
-            android:onClick="@{()->test.goOnlinePay()}"
-            app:layout_constraintVertical_bias="0.4"
-            android:text="@string/online_pay"
-            android:textColor="@color/textColor"
-            android:textSize="@dimen/button_size"
+            android:text="@string/please_approach_the_pos"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
 
-        <Button
-            android:id="@+id/NFCPay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="35dp"
-            android:background="@drawable/ripple_bg"
-            android:onClick="@{()->test.goNFCPay()}"
-            android:text="@string/nfc_pay"
-            android:textColor="@color/textColor"
-            android:textSize="@dimen/button_size"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/onlinePay" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
@@ -29,6 +28,7 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
 
     public String titleName;
     public String dataStr;
+    private boolean isSuccess = false;
 
     @Override
     protected int getLayoutId() {
@@ -47,53 +47,63 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        dataStr = getIntent().getStringExtra("data");
-        Toast.makeText(this, ""+dataStr, Toast.LENGTH_SHORT).show();
+        if (isSuccess) {
+            dataStr = getIntent().getStringExtra("data");
+            verifySign(dataStr.getBytes(), "nfc");
+        } else {
+            goPay();
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private void initData() {
         if (!getTarget()) {
-            binding.onlineCons.setVisibility(View.INVISIBLE);
+            binding.onlineMoney.setVisibility(View.INVISIBLE);
             binding.nfcMoney.setVisibility(View.VISIBLE);
-            binding.nfcMoney.setText("支付金额:" + dataStr + "元");
+            binding.onlineYuan.setVisibility(View.INVISIBLE);
+            binding.nfcMoney.setText(dataStr);
+            goPay();
         } else {
+            binding.pay.setVisibility(View.VISIBLE);
+            binding.nfcYuan.setVisibility(View.INVISIBLE);
             binding.onlineMoney.setText("10");
         }
     }
 
     public void goPay() {
-        if (getTarget()) {
-            //线上交易认证，需要用户指纹比对
-            switch (FingerManager.checkSupport(PayActivity.this)) {
-                case DEVICE_UNSUPPORTED:
-                    showToast("您的设备不支持指纹");
-                    break;
-                case SUPPORT_WITHOUT_DATA:
-                    showToast("请在系统录入指纹后再验证");
-                    break;
-                case SUPPORT:
-                    TeeSimManager.getInstance().authenticateOnline(this, "test".getBytes(), this::verifySign);
-                    break;
-            }
-        } else {
-            //TODO NFC
-            showToast("nfc支付");
-            TeeSimManager.getInstance().authenticateNFC(this, "test".getBytes(), b -> {
-                if (b) {
-                    verifySign("test".getBytes());
+        switch (FingerManager.checkSupport(PayActivity.this)) {
+            case DEVICE_UNSUPPORTED:
+                showToast("您的设备不支持指纹");
+                break;
+            case SUPPORT_WITHOUT_DATA:
+                showToast("请在系统录入指纹后再验证");
+                break;
+            case SUPPORT:
+                if (getTarget()) {
+                    //线上交易认证，需要用户指纹比对
+                    TeeSimManager.getInstance().authenticateOnline(this, "test".getBytes(), sign -> verifySign(sign, ""));
+                } else {
+                    //NFC支付,需要用户指纹比对
+                    TeeSimManager.getInstance().authenticateNFC(this, "test".getBytes(), b -> {
+                        if (b) {
+                            isSuccess = true;
+                            showToast("指纹验证成功");
+                        }
+                    });
                 }
-            });
+                break;
         }
+
     }
 
     /**
      * 验证签名
      */
-    private void verifySign(byte[] sign) {
+    private void verifySign(byte[] sign, String form) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("type", "sign");
         map.put("sign", sign);
+        map.put("form", form);
         RequestUtils.verifySign(this, map, new MyObserver<PayBean>(this, true) {
             @Override
             public void onSuccess(BaseResponse<PayBean> result) {

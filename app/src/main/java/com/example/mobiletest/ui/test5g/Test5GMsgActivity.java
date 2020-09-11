@@ -47,8 +47,7 @@ public class Test5GMsgActivity extends BaseActivity<ActivityTest5gMsgBinding> {
      * NFC支付
      */
     public void goNFCPay() {
-        Intent intent = new Intent(this, PayActivity.class);
-        intent.putExtra("title", getResources().getString(R.string.nfc_pay_test));
+        Intent intent = new Intent(this, RemindActivity.class);
         startActivity(intent);
     }
 }

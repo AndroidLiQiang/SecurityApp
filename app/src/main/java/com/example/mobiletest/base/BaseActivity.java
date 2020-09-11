@@ -47,7 +47,7 @@ public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatA
                 .navigationBarDarkIcon(true)
                 .keyboardEnable(false)
                 .fitsSystemWindows(true)
-                .statusBarColor("#FAFAFA")
+                .statusBarColor("#FFFFFF")
                 .init();
     }
 

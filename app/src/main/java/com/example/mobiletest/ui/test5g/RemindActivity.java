@@ -3,6 +3,7 @@ package com.example.mobiletest.ui.test5g;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
 import com.example.mobiletest.databinding.ActivityRemindBinding;
@@ -23,6 +24,7 @@ public class RemindActivity extends BaseActivity<ActivityRemindBinding> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding.setVariable(BR.remind, this);
     }
 
     public void goMain() {

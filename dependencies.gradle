@@ -9,7 +9,7 @@ ext {
     ]
 
     versions = [
-            android_plugin: '4.0.0',
+            android_plugin: '4.0.1',
             immersionbar  : '3.0.0',
             okhttp        : '4.8.0',
             rxjava        : '3.0.6',
@@ -18,7 +18,8 @@ ext {
             retrofit      : '2.9.0',
             lottie        : '3.4.1',
             autosize      : '1.2.1',
-            recyclerview  : '1.1.0'
+            recyclerview  : '1.1.0',
+            transferee    : '1.6.1',
     ]
 
     build_plugins = [
@@ -45,5 +46,7 @@ ext {
             autosize                    : [group: 'me.jessyan', name: 'autosize', version: versions.autosize],
 
             recyclerview                : [group: 'androidx.recyclerview', name: 'recyclerview', version: versions.recyclerview],
+
+            transferee                : [group: 'com.github.Hitomis.transferee', name: 'Transferee', version: versions.transferee],
     ]
 }

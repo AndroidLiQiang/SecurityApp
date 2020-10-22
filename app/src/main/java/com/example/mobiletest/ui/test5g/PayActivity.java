@@ -27,8 +27,10 @@ import java.util.HashMap;
 public class PayActivity extends BaseActivity<ActivityPayBinding> {
 
     public String titleName;
-    public String dataStr;
+    public String dataStr;//nfc接收
     private boolean isSuccess = false;
+    private TeeSimManager teeSimManager = new TeeSimManager(this);
+    private String moneyEntry;
 
     @Override
     protected int getLayoutId() {
@@ -38,10 +40,31 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTeeOrSe();
         titleName = getIntent().getStringExtra("title");
         dataStr = getIntent().getStringExtra("data");
+        moneyEntry = getIntent().getStringExtra("moneyEntry");
         binding.setVariable(BR.pay, this);
         initData();
+    }
+
+    private void initTeeOrSe() {
+        teeSimManager.initTeeService(this, new TeeSimManager.ITeeServiceCallback() {
+            @Override
+            public void onServiceConnected() {
+
+            }
+
+            @Override
+            public void onServiceDisconnected() {
+
+            }
+        });
+        teeSimManager.initSEService(this, new TeeSimManager.ISEServiceConnectedCallback() {
+            @Override
+            public void onConnected() {
+            }
+        });
     }
 
     @Override
@@ -61,12 +84,12 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
             binding.onlineMoney.setVisibility(View.INVISIBLE);
             binding.nfcMoney.setVisibility(View.VISIBLE);
             binding.onlineYuan.setVisibility(View.INVISIBLE);
-            binding.nfcMoney.setText(dataStr);
-            goPay();
+            binding.nfcMoney.setText(dataStr);goPay();
         } else {
             binding.pay.setVisibility(View.VISIBLE);
             binding.nfcYuan.setVisibility(View.INVISIBLE);
-            binding.onlineMoney.setText("10");
+            //TODO
+            binding.onlineMoney.setText(moneyEntry);
         }
     }
 
@@ -81,10 +104,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
             case SUPPORT:
                 if (getTarget()) {
                     //线上交易认证，需要用户指纹比对
-                    TeeSimManager.getInstance().authenticateOnline(this, "test".getBytes(), sign -> verifySign(sign, ""));
+                    teeSimManager.authenticateOnline(PayActivity.this, bytes -> verifySign(bytes, ""));
                 } else {
                     //NFC支付,需要用户指纹比对
-                    TeeSimManager.getInstance().authenticateNFC(this, "test".getBytes(), b -> {
+                    teeSimManager.authenticateNFC(this, "test".getBytes(), b -> {
                         if (b) {
                             isSuccess = true;
                             showToast("指纹验证成功");
@@ -139,5 +162,11 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         }
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        teeSimManager.releaseResource();
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -15,20 +14,19 @@ import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
 import com.example.mobiletest.adapter.ResultAdapter;
 import com.example.mobiletest.base.BaseActivity;
-import com.example.mobiletest.bean.EncryptBean;
 import com.example.mobiletest.bean.ResultBean;
 import com.example.mobiletest.databinding.ActivityEncryptOrDecryptBinding;
-import com.example.mobiletest.net.BaseResponse;
 import com.example.mobiletest.net.Constants;
-import com.example.mobiletest.net.MyObserver;
-import com.example.mobiletest.net.RequestUtils;
 import com.example.mobiletest.util.SPUtil;
 import com.example.teesimmanager.TeeSimManager;
+import com.example.teesimmanager.TeeSimManager.IDecryptCallback;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,13 +36,14 @@ import java.util.Objects;
  * date   : 2020/7/9
  * desc   : 5g消息加解密
  */
-public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecryptBinding> implements TeeSimManager.IDecryptCallback {
+public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecryptBinding> implements IDecryptCallback {
 
     private int position;
     private List<ResultBean> data = new ArrayList<>();
     private ResultAdapter resultAdapter;
     private int index = 0;
     private List<String> testData = new ArrayList<>();
+    private TeeSimManager teeSimManager = new TeeSimManager(this);
 
     @Override
     protected int getLayoutId() {
@@ -55,14 +54,35 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding.setVariable(BR.ed, this);
+        initTeeOrSe();
         initData();
         initRecyclerView();
     }
 
+    private void initTeeOrSe() {
+        teeSimManager.initTeeService(this, new TeeSimManager.ITeeServiceCallback() {
+            @Override
+            public void onServiceConnected() {
+
+            }
+
+            @Override
+            public void onServiceDisconnected() {
+
+            }
+        });
+        teeSimManager.initSEService(this, new TeeSimManager.ISEServiceConnectedCallback() {
+            @Override
+            public void onConnected() {
+            }
+        });
+    }
+
     private void initData() {
-        if (SPUtil.getList(Constants.DATA_LIST) != null) {
-            data = SPUtil.getList(Constants.DATA_LIST);
+        if (SPUtil.getList(Constants.DATA_5G_LIST) != null) {
+            data = SPUtil.getList(Constants.DATA_5G_LIST);
         }
+        testData.add("12345678912");
         testData.add(getResources().getString(R.string.test_msg1));
         testData.add(getResources().getString(R.string.test_msg2));
         testData.add(getResources().getString(R.string.test_msg3));
@@ -103,7 +123,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      * 5G消息本地储存
      */
     public void save5GMsg() {
-        SPUtil.putList(Constants.DATA_LIST, resultAdapter.getData());
+        SPUtil.putList(Constants.DATA_5G_LIST, resultAdapter.getData());
     }
 
     /**
@@ -111,103 +131,57 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      */
     public void encrypt() {
         String message = Objects.requireNonNull(binding.message.getText()).toString();
-        if (!TextUtils.isEmpty(message)) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put("data", message);
-            RequestUtils.encryptData(this, map, new MyObserver<EncryptBean>(this, false) {
-                @Override
-                public void onSuccess(BaseResponse<EncryptBean> result) {
-                    if (result != null) {
-                        String code = result.getCode();
-                        int integerCode = Integer.parseInt(code);
-                        String message = result.getMessage();
-                        if (integerCode == 200) {
-                            String message1 = result.getResult().getEncryptOrDecrypt();
-                            showToast(message);
-                            resultAdapter.addItem(new ResultBean(message1, getTime()));
-                            binding.recyclerView.smoothScrollToPosition(0);
-                        } else {
-                            showToast(message);
-                        }
-                        save5GMsg();
-                    }
+        byte[] bytes = {1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 1, 2, 3, 4, 5, 6};
+        if (message != null) {
+            try {
+                String fillStr = "^";
+                int length = message.getBytes("UTF-8").length;
+                int fill = 16 - length % 16;
+                for (int i = 0; i < fill; i++) {
+                    message = message + fillStr;
                 }
-
-                @Override
-                public void onFailure(Throwable e, String errorMsg) {
-                    Toast.makeText(EncryptOrDecryptActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-                }
-            });
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            byte[] encrypt = teeSimManager.encrypt(message.getBytes());
+//            showToast("加密成功");
+            resultAdapter.addItem(new ResultBean(encrypt, getTime(), "1"));
+            binding.recyclerView.smoothScrollToPosition(0);
+            save5GMsg();
         } else {
             showToast(getString(R.string.please_input_encrypt_msg));
         }
-        /*if (mseeage != null && !TextUtils.isEmpty(mseeage)) {
-            byte[] encrypt = TeeSimManager.getInstance().encrypt(mseeage.getBytes());
-            Toast.makeText(this, "加密" + encrypt, Toast.LENGTH_SHORT).show();
-            binding.result.setText(encrypt + "");
-            return encrypt;
-        } else {
-            Toast.makeText(this, "请输入要加密的消息", Toast.LENGTH_SHORT).show();
-        }
-        return null;*/
     }
 
     /**
-     * 解密 TODO 解密失败逻辑
+     * 解密
      */
     public void decrypt() {
         if (!resultAdapter.getItemIsSelect()) {
             showToast(getString(R.string.select_item));
         } else {
-            String message = resultAdapter.getData().get(position).getContent();
-            if (!TextUtils.isEmpty(message)) {
-                HashMap<String, String> map = new HashMap<>();
-                map.put("data", message);
-                RequestUtils.decryptData(this, map, new MyObserver<EncryptBean>(this, false) {
-                    @Override
-                    public void onSuccess(BaseResponse<EncryptBean> result) {
-                        if (result != null) {
-                            String code = result.getCode();
-                            int integerCode = Integer.parseInt(code);
-                            String message1 = result.getMessage();
-                            if (integerCode == 200) {
-                                String message2 = result.getResult().getEncryptOrDecrypt();
-                                showToast(message1);
-                                binding.message.setText(message2);
-                            } else {
-                                showToast(message1);
-                                teeSimManagerDecrypt(message);
-                            }
+            byte[] message = resultAdapter.getData().get(position).getByteContent();
+            if (message != null) {
+                byte[] decrypt = teeSimManager.decrypt(message);
+                byte[] decrypt2 = new byte[]{0x6f, 0x01};
+                if (Arrays.equals(decrypt, decrypt2)) {
+                    teeSimManager.decrypt(this, message, bytes -> {
+                        if (bytes != null) {
+                            String decryptMsg = null;
+                            decryptMsg = new String(bytes, StandardCharsets.UTF_8).replaceAll("\\^", "");
+                            binding.message.setText(decryptMsg);
+                            showToast("解密成功");
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Throwable e, String errorMsg) {
-                        showToast(errorMsg);
-                        teeSimManagerDecrypt(message);
-                    }
-                });
+                    });
+                } else {
+                    showToast("解密成功");
+                    binding.message.setText(new String(decrypt));
+                }
+
             } else {
-                showToast(getString(R.string.please_encrypt));
+                showToast("解密数据为空");
             }
-        /*//正常解密
-        byte[] encrypt;
-        if (encrypt != null) {
-            byte[] decrypt = TeeSimManager.getInstance().decrypt(encrypt);
-            String message = new String(decrypt);
-            Toast.makeText(this, "解密后的消息" + message, Toast.LENGTH_SHORT).show();
-
-            if (decrypt != null && false) {//假设解密失败
-
-                Toast.makeText(this, "解密失败，请指纹解密", Toast.LENGTH_SHORT).show();
-                //正常解密失败   指纹验证解密
-                TeeSimManager.getInstance().decrypt(this, encrypt, this);
-            }
-        } else {
-
-            Toast.makeText(this, "解密数据为空", Toast.LENGTH_SHORT).show();
-
-        }*/
         }
     }
 
@@ -224,7 +198,7 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
      */
     public void delete() {
         resultAdapter.removedItem(position);
-        SPUtil.putList(Constants.DATA_LIST, resultAdapter.getData());
+        SPUtil.putList(Constants.DATA_5G_LIST, resultAdapter.getData());
     }
 
     public void judgeSimState() {
@@ -234,8 +208,8 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
         switch (simState) {
             case TelephonyManager.SIM_STATE_UNKNOWN: //0未知状态
             case TelephonyManager.SIM_STATE_ABSENT:  //1没有SIM卡
-                //TODO 回调暂且为接口解密
-                TeeSimManager.getInstance().decrypt(EncryptOrDecryptActivity.this,
+                //解密
+                teeSimManager.decrypt(EncryptOrDecryptActivity.this,
                         resultAdapter.getData().get(position).getContent().getBytes(),
                         bytes -> decrypt());
                 break;
@@ -264,7 +238,17 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
     }
 
     private void teeSimManagerDecrypt(String message) {
-        TeeSimManager.getInstance().decrypt(EncryptOrDecryptActivity.this, message.getBytes(), this);
+        teeSimManager.decrypt(EncryptOrDecryptActivity.this, message.getBytes(), this);
+        /*teeSimManager.initTeeService(this, new TeeSimManager.ITeeServiceCallback() {
+            @Override
+            public void onServiceConnected() {
+            }
+
+            @Override
+            public void onServiceDisconnected() {
+
+            }
+        });*/
     }
 
     @Override
@@ -275,10 +259,27 @@ public class EncryptOrDecryptActivity extends BaseActivity<ActivityEncryptOrDecr
 //                showToast("解密后的消息为" + message);
             } else {
                 showToast("解密失败");
-                TeeSimManager.getInstance().decrypt(this, bytes, this);
+                teeSimManager.decrypt(this, bytes, this);
+                /*teeSimManager.initTeeService(this, new TeeSimManager.ITeeServiceCallback() {
+                    @Override
+                    public void onServiceConnected() {
+                        teeSimManager.decrypt(this, bytes, this);
+                    }
+
+                    @Override
+                    public void onServiceDisconnected() {
+
+                    }
+                });*/
             }
         } else {
             showToast("解密数据为空");
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        teeSimManager.releaseResource();
     }
 }

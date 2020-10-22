@@ -28,6 +28,13 @@ public class Test5GMsgActivity extends BaseActivity<ActivityTest5gMsgBinding> {
     }
 
     /**
+    * 图片加解密
+    * */
+    public void goImageEncryptOrDecrypt() {
+        startActivity(new Intent(this, ImageEncryptOrDecryptActivity.class));
+    }
+
+    /**
     * 5g消息加解密
     * */
     public void goEncryptOrDecrypt() {
@@ -38,8 +45,7 @@ public class Test5GMsgActivity extends BaseActivity<ActivityTest5gMsgBinding> {
      * 在线支付
      */
     public void goOnlinePay() {
-        Intent intent = new Intent(this, PayActivity.class);
-        intent.putExtra("title", getResources().getString(R.string.online_pay_test));
+        Intent intent = new Intent(this, PayEntryActivity.class);
         startActivity(intent);
     }
 

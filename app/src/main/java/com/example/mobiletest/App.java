@@ -1,8 +1,7 @@
 package com.example.mobiletest;
 
 import android.app.Application;
-
-import com.example.teesimmanager.TeeSimManager;
+import android.os.Handler;
 
 /**
  * author: liqiang
@@ -17,10 +16,27 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        TeeSimManager.getInstance().init(this);
+        //初始化handler
+        mHandler = new Handler();
     }
 
     public static App getInstance() {
         return instance;
+    }
+
+    /**
+     * 在主线程中刷新UI的方法
+     *
+     * @param r
+     */
+    public static void runOnUIThread(Runnable r) {
+        App.getMainHandler().post(r);
+    }
+
+    //qcl用来在主线程中刷新ui
+    private static Handler mHandler;
+
+    public static Handler getMainHandler() {
+        return mHandler;
     }
 }

@@ -39,8 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="#FF333333"
                 android:text="@string/test_based_on_SIM_card"
+                android:textColor="#FF333333"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,10 +57,27 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
+            android:id="@+id/imageEncryptOrDecrypt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/ripple_bg"
+            android:onClick="@{()->test.goOnlinePay()}"
+            android:text="@string/_5g_msg"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/button_size"
+            app:layout_constraintBottom_toTopOf="@+id/encryptOrDecrypt"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
             android:id="@+id/encryptOrDecrypt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="35dp"
+            android:visibility="gone"
             android:layout_marginRight="35dp"
             android:layout_marginBottom="30dp"
             android:background="@drawable/ripple_bg"
@@ -79,15 +96,15 @@
             android:layout_marginLeft="35dp"
             android:layout_marginRight="35dp"
             android:background="@drawable/ripple_bg"
-            android:onClick="@{()->test.goOnlinePay()}"
-            app:layout_constraintVertical_bias="0.4"
-            android:text="@string/online_pay"
+            android:onClick="@{()->test.goNFCPay()}"
+            android:text="@string/nfc_pay"
             android:textColor="@color/textColor"
             android:textSize="@dimen/button_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:layout_constraintVertical_bias="0.35" />
 
         <Button
             android:id="@+id/NFCPay"
@@ -97,8 +114,8 @@
             android:layout_marginTop="30dp"
             android:layout_marginRight="35dp"
             android:background="@drawable/ripple_bg"
-            android:onClick="@{()->test.goNFCPay()}"
-            android:text="@string/nfc_pay"
+            android:onClick="@{()->test.goImageEncryptOrDecrypt()}"
+            android:text="@string/image_encrypt_or_decrypt"
             android:textColor="@color/textColor"
             android:textSize="@dimen/button_size"
             app:layout_constraintLeft_toLeftOf="parent"

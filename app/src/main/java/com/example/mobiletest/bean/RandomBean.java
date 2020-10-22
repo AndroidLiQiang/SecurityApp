@@ -1,6 +1,8 @@
 package com.example.mobiletest.bean;
 
-public class RandomBean {
+import java.io.Serializable;
+
+public class RandomBean implements Serializable {
 
     private String random;
 

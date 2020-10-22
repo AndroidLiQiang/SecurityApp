@@ -1,6 +1,8 @@
 package com.example.mobiletest.bean;
 
-public class UserInfoBean {
+import java.io.Serializable;
+
+public class UserInfoBean implements Serializable {
     /**
      * userInfoBean : {"age":"24","name":"何嘉晨","sex":"男"}
      * code : 200

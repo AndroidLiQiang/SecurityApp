@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mobiletest.R;
 import com.example.mobiletest.bean.ResultBean;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -69,7 +70,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.time.setText(data.get(position).getTime());
-        holder.result.setText(data.get(position).getContent());
+        holder.result.setText(Arrays.toString(data.get(position).getByteContent()));
         holder.item.setOnFocusChangeListener((view, b) -> {
             if (b) {
                 onItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition());

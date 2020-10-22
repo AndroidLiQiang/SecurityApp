@@ -28,6 +28,7 @@ import java.util.HashMap;
 public class MainActivity extends BaseActivity<ActivityMainBinding> {
     private String TAG = "MainActivity";
     final RxPermissions rxPermissions = new RxPermissions(this);
+    private TeeSimManager teeSimManager = new TeeSimManager(this);
 
     @Override
     protected int getLayoutId() {
@@ -37,13 +38,33 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTeeOrSe();
         binding.setVariable(BR.main, this);
         getPermissions();
     }
 
+    private void initTeeOrSe() {
+        teeSimManager.initTeeService(this, new TeeSimManager.ITeeServiceCallback() {
+            @Override
+            public void onServiceConnected() {
+
+            }
+
+            @Override
+            public void onServiceDisconnected() {
+
+            }
+        });
+        teeSimManager.initSEService(this, new TeeSimManager.ISEServiceConnectedCallback() {
+            @Override
+            public void onConnected() {
+            }
+        });
+    }
+
     private void getPermissions() {
         rxPermissions
-                .requestEach(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .requestEach(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .subscribe(permission -> { // will emit 2 Permission objects
                     if (permission.granted) {// 同意后调用
 
@@ -72,9 +93,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
             @Override
             public void onSuccess(BaseResponse<RandomBean> result) {
 //                showToast(result.getMessage());
-                //获取mac
-                byte[] mac = TeeSimManager.getInstance().anthenticate(result.getResult().getRandom().getBytes());
-                verifyMac(mac);
+                //TODO 获取mac
+                byte[] mac = teeSimManager.authenticate(result.getResult().getRandom().getBytes());
+                //无卡返回null；
+                //  有卡返回1字节状态+16字节mac，其中状态字节1表示在线，0表示不在线
+                if (mac == null) {
+                    showToast("无SIM卡,登录失败");
+                } else if (mac[0] == 1) {//1在线
+                    showToast("有SIM卡,在线状态");
+                    verifyMac(mac);
+                } else if (mac[0] == 0) {//0表示不在线
+                    showToast("有SIM卡,不在线状态");
+                }
             }
 
             @Override

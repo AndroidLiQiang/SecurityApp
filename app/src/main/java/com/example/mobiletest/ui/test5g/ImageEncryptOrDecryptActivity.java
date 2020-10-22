@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -159,11 +158,16 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
                 message.append(fillStr);
             }
             byte[] encrypt = teeSimManager.encrypt(message.toString().getBytes());
-            showToast("加密成功");
-            resultBean.setLock("1");
-            resultBean.setByteContent(encrypt);
-            resultAdapter.notifyItemChanged(location);
-            save5GImage();
+            if (encrypt != null) {
+                showToast("加密成功");
+                resultBean.setLock("1");
+                resultBean.setByteContent(encrypt);
+                resultAdapter.notifyItemChanged(location);
+                save5GImage();
+            } else {
+                showToast("加密失败");
+            }
+
         } else {
             showToast("图片已加密,不用再次加密");
         }
@@ -209,7 +213,7 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
 
                 }
             } else {
-                showToast("解密数据为空");
+                showToast("解密失败");
             }
         } else {
             showToast("图片未加密");
@@ -233,7 +237,7 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
         switch (simState) {
             case TelephonyManager.SIM_STATE_UNKNOWN: //0未知状态
             case TelephonyManager.SIM_STATE_ABSENT:  //1没有SIM卡
-                // 回调暂且为接口解密
+                //回调暂且为接口解密
                 teeSimManager.decrypt(ImageEncryptOrDecryptActivity.this,
                         resultAdapter.getData().get(location).getContent().getBytes(),
                         bytes -> decrypt());
@@ -282,22 +286,20 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
         if (requestCode == PictureSelector.SELECT_REQUEST_CODE) {
             if (data != null) {
                 PictureBean pictureBean = data.getParcelableExtra(PictureSelector.PICTURE_RESULT);
-                assert pictureBean != null;
-                Log.i(TAG, "是否裁剪: " + pictureBean.isCut());
-                Log.i(TAG, "原图地址: " + pictureBean.getPath());
-                Log.i(TAG, "图片 Uri: " + pictureBean.getUri());
-                resultAdapter.addItem(new ResultBean(pictureBean.getUri().toString(), getTime(), "2"));
-                testData.add(0, pictureBean.getUri().toString());
-                config = TransferConfig.build()
-                        .setSourceUrlList(testData)
-                        .setProgressIndicator(new ProgressBarIndicator())
-                        .setIndexIndicator(new CircleIndexIndicator())
-                        .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                        .enableScrollingWithPageChange(true)
-                        .bindRecyclerView(binding.recyclerView, R.id.result);
-                transfer.apply(config);
-                resultAdapter.notifyDataSetChanged();
-                save5GImage();
+                if (pictureBean != null) {
+                    resultAdapter.addItem(new ResultBean(pictureBean.getUri().toString(), getTime(), "2"));
+                    testData.add(0, pictureBean.getUri().toString());
+                    config = TransferConfig.build()
+                            .setSourceUrlList(testData)
+                            .setProgressIndicator(new ProgressBarIndicator())
+                            .setIndexIndicator(new CircleIndexIndicator())
+                            .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                            .enableScrollingWithPageChange(true)
+                            .bindRecyclerView(binding.recyclerView, R.id.result);
+                    transfer.apply(config);
+                    resultAdapter.notifyDataSetChanged();
+                    save5GImage();
+                }
             }
         }
     }

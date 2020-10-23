@@ -39,8 +39,8 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         initTeeOrSe();
+        super.onCreate(savedInstanceState);
         titleName = getIntent().getStringExtra("title");
         dataStr = getIntent().getStringExtra("data");
         moneyEntry = getIntent().getStringExtra("moneyEntry");
@@ -63,6 +63,15 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
         teeSimManager.initSEService(this, new TeeSimManager.ISEServiceConnectedCallback() {
             @Override
             public void onConnected() {
+                if (!getTarget()) {
+                    teeSimManager.authenticateNFC(PayActivity.this, "test".getBytes(), b -> {
+                        if (b) {
+                            isSuccess = true;
+                            showToast("指纹验证成功");
+                        }
+                    });
+                }
+
             }
         });
     }
@@ -84,11 +93,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
             binding.onlineMoney.setVisibility(View.INVISIBLE);
             binding.nfcMoney.setVisibility(View.VISIBLE);
             binding.onlineYuan.setVisibility(View.INVISIBLE);
-            binding.nfcMoney.setText(dataStr);goPay();
+            binding.nfcMoney.setText(dataStr);
         } else {
             binding.pay.setVisibility(View.VISIBLE);
             binding.nfcYuan.setVisibility(View.INVISIBLE);
-            //TODO
             binding.onlineMoney.setText(moneyEntry);
         }
     }

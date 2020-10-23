@@ -64,7 +64,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     private void getPermissions() {
         rxPermissions
-                .requestEach(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .requestEach(Manifest.permission.READ_PHONE_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,
+                        Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.SYSTEM_ALERT_WINDOW)
                 .subscribe(permission -> { // will emit 2 Permission objects
                     if (permission.granted) {// 同意后调用
 
@@ -100,10 +101,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                 if (mac == null) {
                     showToast("无SIM卡,登录失败");
                 } else if (mac[0] == 1) {//1在线
-                    showToast("有SIM卡,在线状态");
+                    showToast("有SIM卡,登录成功");
                     verifyMac(mac);
                 } else if (mac[0] == 0) {//0表示不在线
-                    showToast("有SIM卡,不在线状态");
+                    showToast("有SIM卡,登录失败(SIM卡不在线)");
                 }
             }
 

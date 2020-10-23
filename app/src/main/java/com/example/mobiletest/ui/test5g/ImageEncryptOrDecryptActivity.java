@@ -47,7 +47,7 @@ import java.util.Objects;
 public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEncryptOrDecryptBinding> implements TeeSimManager.IDecryptCallback {
 
     public static final String TAG = "PictureSelector";
-    private int location;
+    private int location = -1;
     private List<ResultBean> resultData = new ArrayList<>();
     private NineGridAdapter resultAdapter;
     private List<String> testData = new ArrayList<>();
@@ -114,7 +114,25 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
             @Override
             public void onItemClick(View view, RecyclerView.ViewHolder viewHolder, int position) {
                 if ("1".equals(resultAdapter.getData().get(position).getLock())) {
-                    showToast("请解密图片");
+                    ResultBean resultBean = resultAdapter.getData().get(location);
+                    byte[] message = resultBean.getByteContent();
+                    if (message != null) {
+                        byte[] decrypt = teeSimManager.decrypt(message);
+                        byte[] decrypt2 = new byte[]{0x6f, 0x01};
+                        if (Arrays.equals(decrypt, decrypt2)) {
+                            teeSimManager.decrypt(ImageEncryptOrDecryptActivity.this, message, bytes -> {
+                                if (bytes != null) {
+                                    config.setNowThumbnailIndex(position);
+                                    transfer.apply(config).show();
+                                }
+                            });
+                        } else {
+                            config.setNowThumbnailIndex(position);
+                            transfer.apply(config).show();
+                        }
+                    } else {
+                        showToast("解密失败");
+                    }
                 } else {
                     config.setNowThumbnailIndex(position);
                     transfer.apply(config).show();
@@ -148,28 +166,32 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
      * 加密
      */
     public void encrypt() {
-        ResultBean resultBean = resultAdapter.getData().get(location);
-        if ("2".equals(resultBean.getLock())) {
-            StringBuilder message = new StringBuilder(Objects.requireNonNull(resultBean.getContent()));
-            String fillStr = "^";
-            int length = message.toString().getBytes(StandardCharsets.UTF_8).length;
-            int fill = 16 - length % 16;
-            for (int i = 0; i < fill; i++) {
-                message.append(fillStr);
-            }
-            byte[] encrypt = teeSimManager.encrypt(message.toString().getBytes());
-            if (encrypt != null) {
-                showToast("加密成功");
-                resultBean.setLock("1");
-                resultBean.setByteContent(encrypt);
-                resultAdapter.notifyItemChanged(location);
-                save5GImage();
-            } else {
-                showToast("加密失败");
-            }
+        if (location != -1) {
+            ResultBean resultBean = resultAdapter.getData().get(location);
+            if ("2".equals(resultBean.getLock())) {
+                StringBuilder message = new StringBuilder(Objects.requireNonNull(resultBean.getContent()));
+                String fillStr = "^";
+                int length = message.toString().getBytes(StandardCharsets.UTF_8).length;
+                int fill = 16 - length % 16;
+                for (int i = 0; i < fill; i++) {
+                    message.append(fillStr);
+                }
+                byte[] encrypt = teeSimManager.encrypt(message.toString().getBytes());
+                if (encrypt != null) {
+                    showToast("加密成功");
+                    resultBean.setLock("1");
+                    resultBean.setByteContent(encrypt);
+                    resultAdapter.notifyItemChanged(location);
+                    save5GImage();
+                } else {
+                    showToast("加密失败");
+                }
 
+            } else {
+                showToast("图片已加密,不用再次加密");
+            }
         } else {
-            showToast("图片已加密,不用再次加密");
+            showToast("请选择图片");
         }
 
     }
@@ -178,47 +200,50 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
      * 解密
      */
     public void decrypt() {
-        ResultBean resultBean = resultAdapter.getData().get(location);
-        if ("1".equals(resultBean.getLock())) {
-            byte[] message = resultBean.getByteContent();
-            if (message != null) {
-                byte[] decrypt = teeSimManager.decrypt(message);
-                byte[] decrypt2 = new byte[]{0x6f, 0x01};
-                if (Arrays.equals(decrypt, decrypt2)) {
-                    teeSimManager.decrypt(this, message, bytes -> {
-                        if (bytes != null) {
-                            String decryptMsg;
-                            decryptMsg = new String(bytes, StandardCharsets.UTF_8).replaceAll("\\^", "");
-                            //解密展示
-                            showToast("解密成功");
-                            resultBean.setLock("2");
-                            resultBean.setContent(decryptMsg);
-                            resultAdapter.notifyItemChanged(location);
-                            save5GImage();
+        if (location != -1) {
+            ResultBean resultBean = resultAdapter.getData().get(location);
+            if ("1".equals(resultBean.getLock())) {
+                byte[] message = resultBean.getByteContent();
+                if (message != null) {
+                    byte[] decrypt = teeSimManager.decrypt(message);
+                    byte[] decrypt2 = new byte[]{0x6f, 0x01};
+                    if (Arrays.equals(decrypt, decrypt2)) {
+                        teeSimManager.decrypt(this, message, bytes -> {
+                            if (bytes != null) {
+                                String decryptMsg;
+                                decryptMsg = new String(bytes, StandardCharsets.UTF_8).replaceAll("\\^", "");
+                                //解密展示
+                                showToast("解密成功");
+                                resultBean.setLock("2");
+                                resultBean.setContent(decryptMsg);
+                                resultAdapter.notifyItemChanged(location);
+                                save5GImage();
 
-                        } else {
-                            showToast("解密失败");
-                        }
+                            } else {
+                                showToast("解密失败");
+                            }
 
-                    });
+                        });
+                    } else {
+                        String decryptMsg;
+                        decryptMsg = new String(decrypt, StandardCharsets.UTF_8).replaceAll("\\^", "");
+                        //解密展示
+                        showToast("解密成功");
+                        resultBean.setLock("2");
+                        resultBean.setContent(decryptMsg);
+                        resultAdapter.notifyItemChanged(location);
+                        save5GImage();
+
+                    }
                 } else {
-                    String decryptMsg;
-                    decryptMsg = new String(decrypt, StandardCharsets.UTF_8).replaceAll("\\^", "");
-                    //解密展示
-                    showToast("解密成功");
-                    resultBean.setLock("2");
-                    resultBean.setContent(decryptMsg);
-                    resultAdapter.notifyItemChanged(location);
-                    save5GImage();
-
+                    showToast("解密失败");
                 }
             } else {
-                showToast("解密失败");
+                showToast("图片未加密");
             }
         } else {
-            showToast("图片未加密");
+            showToast("请选择图片");
         }
-
     }
 
     /**
@@ -227,6 +252,9 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
     public void delete() {
         resultAdapter.removedItem(location);
         testData.remove(location);
+        if (testData.size() == 0) {
+            location = -1;
+        }
         SPUtil.putList(Constants.DATA_IMAGE_LIST, resultAdapter.getData());
     }
 

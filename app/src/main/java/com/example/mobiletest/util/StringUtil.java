@@ -1,5 +1,9 @@
 package com.example.mobiletest.util;
 
+import android.annotation.SuppressLint;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -18,5 +22,15 @@ public class StringUtil {
             sb.append(str.charAt(number));
         }
         return sb.toString();
+    }
+
+    /**
+     * 获取时间
+     */
+    public static String getTime() {
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+        return dateFormat.format(date);
     }
 }

@@ -3,6 +3,7 @@ package com.example.mobiletest.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,10 +15,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.mobiletest.R;
 import com.example.mobiletest.bean.ResultBean;
 import com.example.mobiletest.util.Base64AndPic;
+import com.example.mobiletest.util.FileUtil;
 import com.example.mobiletest.util.GlideBlurTransformer;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -75,6 +78,10 @@ public class NineGridAdapter extends CommonAdapter<ResultBean> {
         if (!isRemove) {
             Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show();
         } else if (data.size() > 0) {
+            //隐藏图片
+            File hiddenFile = new File(Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + data.get(position).getPhotoNam());
+            FileUtil.deleteFolder(hiddenFile);
+
             data.remove(position);
             notifyDataSetChanged();
             return true;

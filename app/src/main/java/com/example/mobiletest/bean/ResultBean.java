@@ -13,6 +13,7 @@ public class ResultBean implements Serializable {
     private String bitmapStr;
     private byte[] byteContent;
     private String time;
+    private String photoNam;
     private String lock;//1有锁 2无锁
 
     public ResultBean(String content, String time) {
@@ -20,10 +21,11 @@ public class ResultBean implements Serializable {
         this.time = time;
     }
 
-    public ResultBean(String content, String time, String lock) {
+    public ResultBean(String content, String time, String lock, String photoNam) {
         this.content = content;
         this.time = time;
         this.lock = lock;
+        this.photoNam = photoNam;
     }
 
     public ResultBean(byte[] byteContent, String time, String lock) {
@@ -70,5 +72,13 @@ public class ResultBean implements Serializable {
 
     public void setBitmapStr(String bitmapStr) {
         this.bitmapStr = bitmapStr;
+    }
+
+    public String getPhotoNam() {
+        return photoNam;
+    }
+
+    public void setPhotoNam(String photoNam) {
+        this.photoNam = photoNam;
     }
 }

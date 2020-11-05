@@ -4,9 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,6 +26,7 @@ import com.example.mobiletest.net.Constants;
 import com.example.mobiletest.util.Base64AndPic;
 import com.example.mobiletest.util.FileUtil;
 import com.example.mobiletest.util.SPUtil;
+import com.example.mobiletest.util.StringUtil;
 import com.example.teesimmanager.TeeSimManager;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
@@ -36,13 +37,15 @@ import com.wildma.pictureselector.PictureBean;
 import com.wildma.pictureselector.PictureSelector;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -98,7 +101,8 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
         if (SPUtil.getList(Constants.DATA_IMAGE_LIST) != null) {
             resultData = SPUtil.getList(Constants.DATA_IMAGE_LIST);
             for (int i = 0; i < resultData.size(); i++) {
-                testData.add(resultData.get(i).getContent());
+                testData.add(String.valueOf(Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + resultData.get(i).getPhotoNam())));
+                Log.d(TAG, "initData: testData:" + Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + resultData.get(i).getPhotoNam()));
             }
         }
     }
@@ -176,22 +180,6 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
         SPUtil.putList(Constants.DATA_IMAGE_LIST, resultAdapter.getData());
     }
 
-    private String bitmapToStr() {
-        Uri parse = Uri.parse(resultAdapter.getData().get(location).getContent());
-        Bitmap bitmap = null;
-        try {
-            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(parse));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (bitmap != null) {
-            String bitmapStr = Base64AndPic.imgToBase64String(bitmap);
-            return bitmapStr;
-        }
-        return "";
-
-    }
-
     /**
      * 选择图片
      */
@@ -205,6 +193,9 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
      * 加密
      */
     public void encrypt() {
+        if (isFastDoubleClick()) {
+            return;
+        }
         if (location != -1) {
             ResultBean resultBean = resultAdapter.getData().get(location);
             if ("2".equals(resultBean.getLock())) {
@@ -217,14 +208,12 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
                 }
                 byte[] encrypt = teeSimManager.encrypt(message.toString().getBytes());
                 if (encrypt != null) {
-                    if (TextUtils.isEmpty(bitmapToStr())) {
+                    if (TextUtils.isEmpty(FileUtil.bitmapToStr(this, Uri.parse(resultAdapter.getData().get(location).getContent())))) {
                         showToast("相册中原图已被删除,加密失败");
 //                        delete();
                     } else {
                         showToast("加密成功");
-
-                        resultBean.setBitmapStr(bitmapToStr());//保存图片bitmapString
-
+                        resultBean.setBitmapStr(FileUtil.bitmapToStr(this, Uri.parse(resultAdapter.getData().get(location).getContent())));//保存图片bitmapString
                         resultBean.setLock("1");
                         resultBean.setByteContent(encrypt);
                         resultAdapter.notifyItemChanged(location);
@@ -248,6 +237,9 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
      * 解密
      */
     public void decrypt() {
+        if (isFastDoubleClick()) {
+            return;
+        }
         if (location != -1) {
             ResultBean resultBean = resultAdapter.getData().get(location);
             if ("1".equals(resultBean.getLock())) {
@@ -255,6 +247,7 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
                 if (message != null) {
                     byte[] decrypt = teeSimManager.decrypt(message);
                     byte[] decrypt2 = new byte[]{0x6f, 0x01};
+                    String photoRandomName = System.currentTimeMillis() + ".jpg";
                     if (Arrays.equals(decrypt, decrypt2)) {
                         teeSimManager.decrypt(this, message, bytes -> {
                             if (bytes != null) {
@@ -263,19 +256,10 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
                                 //解密展示
                                 showToast("解密成功");
                                 resultBean.setLock("2");
-
-                                //解密保存加密时删除的图片到相册
-                                Bitmap bitmap = Base64AndPic.base64ToImage(resultBean.getBitmapStr());
-                                Uri uri = FileUtil.saveBitmap(this, bitmap, System.currentTimeMillis() + ".jpg");
-                                resultBean.setContent(uri.toString());
-                                testData.set(location, uri.toString());
-                                resultAdapter.notifyItemChanged(location);
-                                save5GImage();
-
+                                decryptFileOperation(resultBean, photoRandomName);
                             } else {
                                 showToast("解密失败");
                             }
-
                         });
                     } else {
                         String decryptMsg;
@@ -283,16 +267,7 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
                         //解密展示
                         showToast("解密成功");
                         resultBean.setLock("2");
-
-                        //解密保存加密时删除的图片到相册
-                        Bitmap bitmap = Base64AndPic.base64ToImage(resultBean.getBitmapStr());
-                        Uri uri = FileUtil.saveBitmap(this, bitmap, System.currentTimeMillis() + ".jpg");
-                        resultBean.setContent(uri.toString());
-
-                        Log.d(TAG, "解密: 时保存的地址:" + uri);
-                        testData.set(location, uri.toString());
-                        resultAdapter.notifyItemChanged(location);
-                        save5GImage();
+                        decryptFileOperation(resultBean, photoRandomName);
                     }
                 } else {
                     showToast("解密失败");
@@ -306,7 +281,39 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
     }
 
     /**
-     * 删除
+     * 解密时文件的保存与删除
+     */
+    private void decryptFileOperation(ResultBean resultBean, String photoRandomName) {
+        //解密保存加密时删除的图片到相册
+        Bitmap bitmap = Base64AndPic.base64ToImage(resultBean.getBitmapStr());
+        Uri uri = FileUtil.saveBitmap(this, bitmap, photoRandomName);
+        deleteHiddenFile();
+        resultBean.setContent(uri.toString());
+        resultBean.setPhotoNam(photoRandomName);
+
+        Log.d(TAG, "解密: 时保存的地址:" + uri);
+        testData.set(location, uri.toString());
+        resultAdapter.notifyItemChanged(location);
+        save5GImage();
+    }
+
+    long mLastClickTime = 0;
+
+    /**
+     * 防连点
+     */
+    public boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();
+        long timeD = time - mLastClickTime;
+        if (0 < timeD && timeD < 1000) {
+            return true;
+        }
+        mLastClickTime = time;
+        return false;
+    }
+
+    /**
+     * 删除按钮
      */
     public void delete() {
         boolean removedItem = resultAdapter.removedItem(location);
@@ -320,16 +327,26 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
     }
 
     /**
+     * 删除隐藏文件夹中图片
+     */
+    private void deleteHiddenFile() {
+        //隐藏图片
+        File hiddenFile = new File(Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + resultAdapter.getData().get(location).getPhotoNam());
+        FileUtil.deleteFolder(hiddenFile);
+    }
+
+    /**
      * 删除相册中图片
      */
     private void deleteImgFromAlbum() {
         File tempFile;
-        if (resultAdapter.getData().get(location).getContent().contains("file://")) {
-            tempFile = new File(resultAdapter.getData().get(location).getContent().replace("file://", ""));
+        ResultBean resultBean = resultAdapter.getData().get(location);
+        if (resultBean.getContent().contains("file://")) {
+            tempFile = new File("/storage/emulated/0/Pictures/" + resultBean.getPhotoNam());
         } else {
-            tempFile = new File(FileUtil.getFilePathFromContentUri(Uri.parse(resultAdapter.getData().get(location).getContent()), this.getContentResolver()));
+            tempFile = new File(FileUtil.getFilePathFromContentUri(Uri.parse(resultBean.getContent()), this.getContentResolver()));
         }
-//        File tempFile = new File(Uri.parse().toString(), this.getContentResolver()));
+        Log.d(TAG, "deleteImgFromAlbum:加密时删除路径: " + tempFile.getAbsolutePath());
         FileUtil.deleteMediaFile(this, tempFile);
     }
 
@@ -359,16 +376,6 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
         }
     }
 
-    /**
-     * 获取时间
-     */
-    public String getTime() {
-        Date date = new Date();
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
-        return dateFormat.format(date);
-    }
-
     @Override
     public void onDecryptCallback(byte[] bytes) {
         if (bytes != null) {
@@ -390,8 +397,11 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
             if (data != null) {
                 PictureBean pictureBean = data.getParcelableExtra(PictureSelector.PICTURE_RESULT);
                 if (pictureBean != null) {
-                    resultAdapter.addItem(new ResultBean(pictureBean.getUri().toString(), getTime(), "2"));
-                    testData.add(0, pictureBean.getUri().toString());
+                    File file = createHiddenPhoto(pictureBean);
+
+                    resultAdapter.addItem(new ResultBean(pictureBean.getUri().toString(), StringUtil.getTime(), "2", file.getName()));
+                    testData.add(0, String.valueOf(Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + file.getName())));
+                    Log.d(TAG, "onActivityResult: testData:" + Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + file.getName()));
                     config = TransferConfig.build()
                             .setSourceUrlList(testData)
                             .setProgressIndicator(new ProgressBarIndicator())
@@ -405,6 +415,33 @@ public class ImageEncryptOrDecryptActivity extends BaseActivity<ActivityImageEnc
                 }
             }
         }
+    }
+
+    /**
+     * 创建隐藏目录下的照片
+     */
+    @NotNull
+    private File createHiddenPhoto(PictureBean pictureBean) {
+        String fileGetName = new File(String.valueOf(pictureBean.getUri())).getName();
+        FileUtil.createFolder();
+        String fileName = Environment.getExternalStorageDirectory().getPath() + "/DCIM/mobilePhoto/.nomedia/" + fileGetName + ".jpg";
+        File file = new File(fileName);
+        //创建照片
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(file);
+            Bitmap bitmap = FileUtil.strToBitmap(this, pictureBean.getUri());
+            if (bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)) {
+                out.flush();
+                out.close();
+                Log.d(TAG, "onActivityResult: 选择图片后保存隐藏文件夹中success");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     @Override

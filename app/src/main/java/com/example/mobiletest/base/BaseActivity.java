@@ -54,7 +54,11 @@ public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatA
     @Override
     public Resources getResources() {
         Resources resources = super.getResources();
-        AutoSizeCompat.autoConvertDensityOfGlobal(resources);
+        try {
+            AutoSizeCompat.autoConvertDensityOfGlobal(resources);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return resources;
     }
 

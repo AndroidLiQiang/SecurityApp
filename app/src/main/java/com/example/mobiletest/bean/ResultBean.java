@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public class ResultBean implements Serializable {
     private String content;
+    private String bitmapStr;
     private byte[] byteContent;
     private String time;
     private String lock;//1有锁 2无锁
@@ -61,5 +62,13 @@ public class ResultBean implements Serializable {
 
     public void setByteContent(byte[] byteContent) {
         this.byteContent = byteContent;
+    }
+
+    public String getBitmapStr() {
+        return bitmapStr;
+    }
+
+    public void setBitmapStr(String bitmapStr) {
+        this.bitmapStr = bitmapStr;
     }
 }

@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.mobiletest.App;
 import com.example.mobiletest.R;
 
 import java.io.File;
@@ -80,7 +81,9 @@ public class CardService extends HostApduService {
      * @param reason Either DEACTIVATION_LINK_LOSS or DEACTIVATION_DESELECTED
      */
     @Override
-    public void onDeactivated(int reason) { }
+    public void onDeactivated(int reason) {
+        App.setReason(reason);
+    }
 
     /**
      * This method will be called when a command APDU has been received from a remote device. A
@@ -104,6 +107,7 @@ public class CardService extends HostApduService {
 
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
+        App.setReason(1);
         Log.i(TAG, "Received APDU: " + ByteArrayToHexString(commandApdu));
         byte[] cmd = null;
         //length 6 is define by WRITE_DATA_APDU from read and emulatior

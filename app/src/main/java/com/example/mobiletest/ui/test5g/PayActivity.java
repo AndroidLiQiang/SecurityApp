@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.mobiletest.App;
 import com.example.mobiletest.BR;
 import com.example.mobiletest.R;
 import com.example.mobiletest.base.BaseActivity;
@@ -68,6 +69,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
                         if (b) {
                             isSuccess = true;
                             showToast("指纹验证成功");
+                            if (App.getReason() == 1) {
+                                dataStr = getIntent().getStringExtra("data");
+                                verifySign(dataStr.getBytes(), "nfc");
+                            }
                         }
                     });
                 }
@@ -119,6 +124,10 @@ public class PayActivity extends BaseActivity<ActivityPayBinding> {
                         if (b) {
                             isSuccess = true;
                             showToast("指纹验证成功");
+                            if (App.getReason() == 1) {
+                                dataStr = getIntent().getStringExtra("data");
+                                verifySign(dataStr.getBytes(), "nfc");
+                            }
                         }
                     });
                 }

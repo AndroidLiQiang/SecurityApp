@@ -1,7 +1,9 @@
 package com.example.mobiletest.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.mobiletest.R;
 import com.example.mobiletest.bean.ResultBean;
+import com.example.mobiletest.util.Base64AndPic;
 import com.example.mobiletest.util.GlideBlurTransformer;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
@@ -24,6 +27,7 @@ import java.util.List;
  * desc  :
  */
 public class NineGridAdapter extends CommonAdapter<ResultBean> {
+    private static final String TAG = "NineGridAdapter";
     private Context context;
     private List<ResultBean> data;
     private OnImageClickListener onImageClickListener;
@@ -44,15 +48,16 @@ public class NineGridAdapter extends CommonAdapter<ResultBean> {
         boolean isLock = "1".equals(data.get(position).getLock());
         lock.setVisibility(isLock ? View.VISIBLE : View.INVISIBLE);
         if (isLock) {
+            Bitmap bitmap = Base64AndPic.base64ToImage(item.getBitmapStr());
+            Log.d(TAG, "convert: " + bitmap);
             Glide.with(result)
-                    .load(Uri.parse(item.getContent()))
-//                    .placeholder(R.mipmap.ic_launcher)
+                    .load(bitmap)
                     .apply(RequestOptions.bitmapTransform(new GlideBlurTransformer(25)))
                     .into(result);
         } else {
+            Log.d(TAG, "convert: 解密图片地址" + item.getContent());
             Glide.with(result)
                     .load(Uri.parse(item.getContent()))
-//                    .placeholder(R.mipmap.ic_launcher)
                     .into(result);
         }
 
@@ -66,15 +71,17 @@ public class NineGridAdapter extends CommonAdapter<ResultBean> {
         });
     }
 
-    public void removedItem(int position) {
+    public boolean removedItem(int position) {
         if (!isRemove) {
             Toast.makeText(context, "请选择条目", Toast.LENGTH_SHORT).show();
         } else if (data.size() > 0) {
             data.remove(position);
             notifyDataSetChanged();
+            return true;
         } else {
             Toast.makeText(context, "没有数据可以删除", Toast.LENGTH_SHORT).show();
         }
+        return false;
     }
 
     public void addItem(ResultBean item) {

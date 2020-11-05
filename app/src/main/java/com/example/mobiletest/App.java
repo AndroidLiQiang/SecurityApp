@@ -11,6 +11,15 @@ import android.os.Handler;
  */
 public class App extends Application {
     private static App instance;
+    private static int reason;//nfc是否贴近设备
+
+    public static int getReason() {
+        return reason;
+    }
+
+    public static void setReason(int reason) {
+        App.reason = reason;
+    }
 
     @Override
     public void onCreate() {
